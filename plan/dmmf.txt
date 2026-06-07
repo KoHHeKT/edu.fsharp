@@ -1,0 +1,1550 @@
+Domain Modeling Made Functional
+            Tackle Software Complexity with
+              Domain-Driven Design and F#
+
+
+
+
+                              Scott Wlaschin
+
+
+
+
+                   The Pragmatic Bookshelf
+                               Raleigh, North Carolina
+Copyright © 2017 The Pragmatic Programmers, LLC.
+
+Printed in the United States of America.
+ISBN-13: 978-1-68050-254-1
+Encoded using the finest acid-free high-entropy binary digits.
+Book version: B5.0—November 20, 2017
+                                Contents
+
+     Change History     .   .    .   .   .   .   .   .   .   .       .       .       vii
+
+     Preface   .    .   .   .    .   .   .   .   .   .   .       .       .       .   ix
+
+
+                   Part I — Understanding the Domain
+1.   Introducing Domain-Driven Design     .  .  .   . .                  .       .    3
+     The Importance of a Shared Model                                                 4
+     Understanding the Domain Through Business Events                                 7
+     Partitioning the Domain into Subdomains                                         15
+     Creating a Solution Using Bounded Contexts                                      17
+     Creating a Ubiquitous Language                                                  22
+     Summarizing the Concepts of Domain-Driven Design                                23
+     Wrapping Up                                                                     24
+
+2.   Understanding the Domain .       .   .   .   .  .       .       .       .       27
+     Interview with a Domain Expert                                                  27
+     Fighting the Impulse to Do Database-Driven Design                               31
+     Fighting the Impulse to Do Class-Driven Design                                  33
+     Documenting the Domain                                                          34
+     Diving Deeper into the Order-Taking Workflow                                    35
+     Representing Complexity in our Domain Model                                     38
+     Wrapping Up                                                                     44
+
+3.   A Functional Architecture  .   .   .  .  .  .  .   .                    .       47
+     Bounded Contexts as Autonomous Software Components                              48
+     Communicating Between Bounded Contexts                                          49
+     Contracts Between Bounded Contexts                                              52
+     Workflows Within a Bounded Context                                              54
+     Code Structure Within a Bounded Context                                         57
+     Wrapping Up                                                                        60
+     What’s Next                                                                        60
+
+
+                    Part II — Modeling the Domain
+4.   Understanding Types       .  .   .    . .    .    .           .       .       .    63
+     Understanding Functions                                                            63
+     Types and Functions                                                                65
+     Composition of Types                                                               68
+     Working with F# Types                                                              71
+     Building a Domain Model by Composing Types                                         72
+     Modeling Optional Values, Errors, and Collections                                  74
+     Organizing Types in Files and Projects                                             77
+     Wrapping Up                                                                        79
+
+5.   Domain Modeling with Types        .   .   .   .       .       .       .       .    81
+     Reviewing the Domain Model                                                         81
+     Seeing Patterns in a Domain Model                                                  82
+     Modeling Simple Values                                                             83
+     Modeling Complex Data                                                              86
+     Modeling Workflows with Functions                                                  89
+     A Question of Identity: Value Objects                                              92
+     A Question of Identity: Entities                                                   93
+     Aggregates                                                                         98
+     Putting It All Together                                                           102
+     Wrapping Up                                                                       105
+
+6.   Integrity and Consistency in the Domain   .       .       .       .       .       107
+     Integrity of Simple Values                                                        108
+     Units of Measure                                                                  110
+     Enforcing Invariants with the Type System                                         112
+     Capturing Business Rules in the Type System                                       112
+     Consistency                                                                       117
+     Wrapping Up                                                                       122
+
+7.   Modeling Workflows as Pipelines      . .  .   .           .       .       .       123
+     The Workflow Input                                                                124
+     Modeling an Order as a Set of States                                              126
+     State Machines                                                                    129
+     Modeling Each Step in the Workflow With Types                                     133
+     Documenting Effects                                                               138
+     Composing the Workflow From the Steps                            141
+     Are Dependencies Part of the Design?                             141
+     The Complete Pipeline                                            143
+     Long Running Workflows                                           145
+     Wrapping Up                                                      147
+     What’s Next                                                      147
+
+
+                   Part III — Implementing the Model
+8.   Understanding Functions .     .      .   .   .   .   .   .   .   151
+     Functions, Functions, Everywhere                                 151
+     Functions Are Things                                             152
+     Total Functions                                                  158
+     Composition                                                      160
+     Wrapping Up                                                      164
+
+9.   Implementation: Composing a Pipeline .    .   .  .       .   .   167
+     Working With Simple Types                                        168
+     Using Function Types to Guide the Implementation                 169
+     Implementing the Validation Step                                 171
+     Implementing the Rest of the Steps                               178
+     Composing the Pipeline Steps Together                            183
+     Injecting Dependencies                                           186
+     Testing Dependencies                                             190
+     The Assembled Pipeline                                           192
+     Wrapping Up                                                      195
+
+10. Implementation: Working with Errors .       .  .   .  .       .   197
+    Using the Result Type to Make Errors Explicit                     197
+    Working with Domain Errors                                        198
+    Chaining Result-Generating Functions                              202
+    Applying “bind” and “map” to Our Pipeline                         209
+    Adapting Other Kinds of Functions to the Two-Track Model          211
+    Making Life Easier with Computation Expressions                   215
+    Monads and more                                                   223
+    Adding the Async Effect                                           224
+    Wrapping Up                                                       226
+
+11. Serialization    .   .    .   .   .   .   .   .   .   .   .   .   227
+    Persistence vs. Serialization                                     227
+    Designing for Serialization                                       228
+    Connecting the Serialization Code to the Workflow               229
+    A Complete Serialization Example                                230
+    How to Translate Domain types to DTOs                           235
+    Wrapping Up                                                     244
+
+12. Persistence     .   .   .   .  .  . .   .   .       .   .   .   245
+    Pushing Persistence to the Edges                                245
+    Command-Query Separation                                        250
+    Bounded Contexts Must Own Their Data Storage                    255
+    Working with Document Databases                                 256
+    Working with Relational Databases                               257
+    Transactions                                                    268
+    Wrapping Up                                                     269
+
+13. Evolving a Design and Keeping It Clean .  .  .      .   .   .   271
+    Change 1: Adding Shipping Charges                               272
+    Change 2: Adding Support for VIP Customers                      276
+    Change 3: Adding Support for Promotion Codes                    279
+    Change 4: Adding a Business Hours Constraint                    286
+    Dealing with Additional Requirements Changes                    288
+    Wrapping Up                                                     289
+    Wrapping Up the Book                                            289
+                                                 Change History
+The book you’re reading is in beta. This means that we update it frequently.
+Here is the list of the major changes that have been made at each beta release
+of the book, with the most recent change first.
+
+Beta 5—November 20, 2017
+ • The book is content-complete and heading to production.
+
+Beta 4—September 6, 2017
+ • Added Chapter 13, Evolving a Design and Keeping It Clean, on page 271.
+
+ • Addressed errata.
+
+
+Beta 3—July 25, 2017
+ • Added Chapter 3, A Functional Architecture, on page 47.
+
+ • Addressed errata.
+
+
+Beta 2—June 28, 2017
+ • Added Chapter 11, Serialization, on page 227 and Chapter 12, Persistence,
+   on page 245.
+
+ • Addressed errata.
+
+
+Beta 1—June 7, 2017
+ • Initial release
+                                                               Preface
+Many people think of functional programming as being all about mathematical
+abstractions and incomprehensible code. In this book, I aim to show that
+functional programming is in fact an excellent choice for domain modeling,
+producing designs that are both clear and concise.
+
+Who Is This Book For?
+This book is for experienced software developers who want to add some new
+tools to their programming tool belt. You should read this book if:
+
+ • You are curious to see how you can model and implement a domain using
+   only types and functions.
+ • You want a simple introduction to Domain-Driven Design, and want to
+   learn how it is different from Object-Oriented Design or database-first
+   design.
+ • You are an experienced Domain-Driven Design practitioner who wants to
+   learn why DDD is a great fit with functional programming.
+ • You want to learn about functional programming, but have been put off
+   by too much theory and abstraction.
+ • You want to see how F# and functional programming can be applied to
+   real-world domains.
+
+You do not need to have prior knowledge of domain-driven design or functional
+programming in order to read this book. This is an introductory book and all
+the important concepts will be explained as we need them.
+
+What’s In This Book?
+This book is divided into three parts:
+
+ • Understanding the domain
+ • Modeling the domain
+ • Implementing the model
+Each part builds on the previous one, so it’s best if you read them in order.
+
+In the first part, Understanding the Domain, we’ll look at the ideas behind
+Domain-Driven Design, and the importance of having a shared understanding
+of a domain. We’ll have a brief look at techniques that help to build this shared
+understanding, such as event storming, and then we’ll look at decomposing
+a large domain into smaller components that we can implement and evolve
+independently.
+
+To be clear, this book is not meant to be a thorough exploration of domain-
+driven design. That’s a large topic, and there are many excellent books and
+websites that cover it in detail. Instead, the goal of this book is to introduce
+you to domain-driven design as a partner to functional domain modeling. We
+will cover the most important concepts of domain-driven design, of course,
+but rather than diving deeply into the subject, we’ll stay at a high level and
+stress two things: (a) the importance of communication with domain experts
+and other non-technical team members, and (b) the value of a shared domain
+model based on real-world concepts.
+
+In the second part, Modeling the Domain, we’ll take one workflow from the
+domain and model it in a functional way. We’ll see how the functional
+decomposition of a workflow differs from an object-oriented approach, and
+we’ll learn how to use types to capture requirements. By the end, we will have
+written concise code that does double duty: first as readable documentation
+of the domain, but also as a compilable framework that the rest of the
+implementation can build upon.
+
+In the third part, Implementing the Model, we’ll take that same modeled
+workflow and implement it. In the process of doing that, we’ll learn how to
+use common functional programming techniques such as composition, partial
+application, and the scary sounding “monad.”
+
+This book is not intended to be a complete guide to functional programming.
+We’ll cover just what we need in order to model and implement the domain,
+and we won’t cover more advanced techniques. Nevertheless, by the end of
+part three, you will be familiar with all the most important functional program-
+ming concepts, and you will have acquired a toolkit of skills that you can
+apply to most programming situations.
+
+As sure as the sun rises, requirements will change, so in the final chapter
+we’ll look at some common directions in which the domain might evolve, and
+how our design can adapt in response.
+Other Approaches To Domain Modeling
+This book focuses on the “mainstream” way of doing domain modeling, by
+defining data structures and the functions that act on them, but there are
+other approaches that might be more applicable in some situations. I’ll mention
+two of them here in case you want to explore them further.
+
+     • If the domain revolves around semi-structured data, then the kinds of
+       rigid models discussed in this book are not suitable, and a better approach
+       would be to use flexible structures such as maps (a.k.a. dictionaries) to
+       store key-value pairs. The Clojure community has many good practices
+       here.
+     • If the emphasis of the domain is on combining elements together to make
+       other elements, then it is often useful to focus on what these composition
+       rules are (the so-called “algebra”) before focusing on the data. Domains
+       like this are widespread, from financial contracts to graphical design tools,
+       and the principle of “composition everywhere” makes them especially
+       suitable for being modeled with a functional approach. Unfortunately,
+       due to space limitations, we won’t be covering these kinds of domains
+       here.
+
+Working With the Code In This Book
+This book will use the F# programming language to demonstrate the concepts
+and techniques of functional programming. The code has been tested with
+the latest version of F# as of June 2017, which is F# 4.1 (available in Visual
+Studio 2017 or installable separately). All the code will work with earlier ver-
+sions of F# as well, and any important differences will be pointed out in the
+text.
+
+One of the great features of F# is that it can be used like a scripting language.
+If you are playing with the example code in conjunction with reading this
+book, I suggest that you type it into a file and evaluate it interactively rather
+than compiling it. For how to do this, search the internet for “F# Scripting
+Tips.”
+
+All the code in this book is available at this book’s page on the Pragmatic
+Programmers website.1
+
+Getting Started With F#
+If you are new to F#, here is some helpful information:
+
+1.     https://pragprog.com/titles/swdddf/source_code
+     • F# is an open-source, cross-platform language. Details of how to download
+       and install it are available at fsharp.org.2
+     • There are many free development environments available for F#. The most
+       popular are Visual Studio (for Windows and Mac) and Visual Studio Code3
+       with the Ionide plugin4 (all platforms)
+     • For help learning F#, there is StackOverflow (using the “F#” tag) and the
+       Slack forums run by the F# Software Foundation.5 The F# community is
+       very friendly and will be happy to help you if you have questions.
+     • For F# news, follow the “#fsharp” tag on Twitter, and read the F# Weekly6
+       newsletter.
+
+This book uses only a small set of features from F#, and most of the syntax
+will be explained as we go. If you need a fuller overview of F# syntax I suggest
+searching the internet for “F# cheat sheet” or “F# syntax.”
+
+Questions Or Suggestions?
+I’d love to get your feedback, so if you have questions or suggestions, please
+participate in the PragProg community forum for this book.7 And if you find
+any specific problems with the text, please use the errata submission form
+there.
+
+Credits
+All diagrams were created by the author using Inkscape. The clipart is from
+openclipart.org. The script typeface (“KitType”) used in the diagrams was
+created by Kenneth Lamug.8
+
+Acknowledgements
+I’d like to thank the reviewers of this book for their very helpful comments
+and feedback: Gien Verschatse, Mathias Brandewinder, Jérémie Chassaing,
+Clément Boudereau, Brian Schau, Nick McGinness, Tibor Simic, Vikas
+Manchanda, Stephen Wolff, Colin Yates, Gabor Hajba, Jacob Chae, Nouran
+Mhmoud and the early access commenters on the book’s forum page.
+
+
+
+2.    http://fsharp.org/
+3.    https://code.visualstudio.com/
+4.    http://ionide.io/
+5.    http://fsharp.org/guides/slack/
+6.    https://sergeytihon.com/category/f-weekly/
+7.    https://forums.pragprog.com/forums/457
+8.    https://www.dafont.com/kittype.font
+                      Part I
+
+Understanding the Domain
+
+
+
+
+ In this first part, we’ll look at the ideas behind do-
+ main-driven design, and the importance of a shared
+ understanding of a domain. We’ll have a brief look
+ at techniques that help to build this shared under-
+ standing, such as event storming, and then we’ll
+ look at decomposing a large domain into smaller
+ components that we can implement and evolve in-
+ dependently.
+                                                                    CHAPTER 1
+
+
+
+                Introducing Domain-Driven Design
+As a developer, you may think that your job is to write code.
+
+I disagree. A developer’s job is to solve a problem through software, and coding
+is just one aspect of software development. Good design and communication
+are just as important, if not more so.
+
+If you think of software development as a pipeline with an input (requirements)
+and an output (the final deliverable), then the “garbage in, garbage out” rule
+applies. If the input is bad (unclear requirements or a bad design), then no
+amount of coding can create a good output.
+
+In the first part of this book we’ll look at how to minimize the “garbage-in” by
+using a design approach focused on clear communication and shared domain
+knowledge: Domain-Driven Design.
+
+In this chapter, we’ll start by discussing the principles of domain-driven
+design, and showing how they can be applied to a particular domain. Domain-
+driven design is a large topic, so we will not be exploring it in detail (for more
+detailed information on domain-driven design, visit dddcommunity.org1).
+However, by the end of this chapter you should at least have a good idea of
+how domain-driven design works, and how it is different from database-driven
+design and object-oriented design.
+
+Domain-driven design is not appropriate for all software development, of
+course. Many types of software (systems software, games, etc) can be built
+using other approaches. However, it is particularly useful for business and
+enterprise software, where developers have to collaborate with other non-
+technical teams, and that kind of software will be the focus of this book.
+
+
+
+1.   http://dddcommunity.org
+                                          Chapter 1. Introducing Domain-Driven Design   •4
+
+The Importance of a Shared Model
+Before attempting to solve a problem it is important that we understand the
+problem correctly. Obviously, if our understanding of the problem is incomplete
+or distorted, then we won’t to be able to provide a useful solution. And sadly,
+of course, it’s the developers’ understanding, not the domain experts’ under-
+standing, that gets released to production!
+
+So how can we ensure that we, as developers, do understand the problem?
+
+Some software development processes address this by using written specifi-
+cations or requirements documents to try to capture all the details of a
+problem. Unfortunately, this approach often creates distance between the
+people who understand the problem best and the people who will implement
+the solution. We’ll call the latter the “development team,” by which we will
+mean not just developers but also UX and UI designers, testers, etc. And we’ll
+call the former “domain experts.” I won’t attempt to define “domain expert”
+here – I think you’ll know one when you see one!
+
+
+                      Domain                Business
+                      experts               Analyst
+
+
+
+                                                      Requirements
+            Design                  Architect         document
+            document
+
+                                                  Code
+                  Development
+                  team
+There is a children’s game called “Telephone” where a message is whispered
+from person to person along a chain of people. With each retelling the message
+gets more and more distorted, with comic results.
+                                                   The Importance of a Shared Model   •5
+
+It’s not so funny in a real-world development project. A mismatch between
+the developer’s understanding of the problem and the domain expert’s
+understanding of the problem can be fatal to the success of the project.
+
+A much better solution is to eliminate the intermediaries and encourage the
+domain experts to be intimately involved with the development process,
+introducing a feedback loop between the development team and the domain
+expert. The development team regularly delivers something to the domain
+expert, who can quickly correct any misunderstandings for the next iteration.
+
+
+                    Domain                 Development
+                    experts                team
+
+
+                             deliverable
+
+                                                     Code
+This kind of iterative process is at the core of “agile” development processes.
+
+However, even in this approach there can be problems. The developer acts
+as a “translator” – translating the domain expert’s mental model into code –
+and, as in any translation, this can result in distortion and loss of important
+subtleties. If the code doesn’t quite correspond to the concepts in the domain,
+then future developers working on the codebase without input from a domain
+expert can easily misunderstand what is needed and introduce errors.
+
+But there is a third approach. What if the domain experts, the development
+team, other stakeholders, and (most importantly) the source code itself, all
+share the same model? In this case, there is no translation from the domain
+expert’s requirements to the code. Rather, the code is designed to reflect the
+shared mental model directly.
+
+And that is the goal of domain-driven design.
+                                                 Chapter 1. Introducing Domain-Driven Design   •6
+
+
+                       Domain                   Development
+                       experts                  team
+
+                                      shared
+                                   mental model
+
+         Other
+         stakeholders                                     Code
+Aligning the software model with the business domain has a number of ben-
+efits:
+
+ • Faster time to market. When the developer and the codebase share the
+   same model as the person who has the problem, the team is more likely
+   to develop an appropriate solution quickly.
+ • More business value. A solution that is accurately aligned with the problem
+   means happier customers and less chance of going off-track.
+ • Less waste. Clearer requirements means less time wasted in misunder-
+   standing and rework. Furthermore, this clarity often reveals which com-
+   ponents are high-value, so that more development effort can be focused
+   on them, and less on low-value components.
+ • Easier maintenance and evolution. When the model expressed by the code
+   closely matches the domain expert’s own model, making changes to the
+   code is easier and less error prone. Furthermore, new team members are
+   able to come up to speed faster.
+
+  The Insanely Effective Delivery Machine
+  Dan North, the well-known developer and promoter of Behavior Driven Development,
+  described his experience with a shared mental model in his talk “Accelerating Agile.”
+  He joined a small team at a trading firm, which he described as the most insanely
+  effective delivery machine he’d ever been a part of. In that firm, a handful of program-
+  mers produced state-of-the-art trading systems in weeks rather than months or years.
+
+  One of the reasons for the success of this team was that the developers were trained
+  to be traders alongside the real traders. That is, they became domain experts them-
+  selves. This in turn meant that they could communicate very effectively with the
+  traders, due to the shared mental model, and build exactly what their domain experts
+  (the traders) wanted.
+                                       Understanding the Domain Through Business Events   •7
+
+So we need to create a shared model. How can we do this? The domain-driven
+design community has developed some guidelines to help us here. They are:
+
+ •   Focus on business events and workflows rather than data structures.
+ •   Partition the problem domain into smaller sub-domains.
+ •   Create a model of each sub-domain in the solution.
+ •   Develop a common language (called the “Ubiquitous Language”) that is
+     shared between everyone involved in the project, and is used everywhere
+     in the code.
+
+Let’s look at these in turn.
+
+Understanding the Domain Through Business Events
+A DDD approach to gathering requirements will emphasize building a shared
+understanding between developers and domain experts. But where should
+we start in order to develop this understanding?
+
+Our first guideline says to focus on business events rather than data struc-
+tures. Why is that?
+
+Well, a business doesn’t just have data, it transforms it somehow. That is,
+you can think of a typical business process as a series of data or document
+transformations. The value of the business is created in this process of
+transformation, so it is critically important to understand how these transfor-
+mations work and how they relate to each other.
+
+Static data – data that is just sitting there unused – is not contributing any-
+thing. So what causes an employee (or automated process) to start working
+with that data and adding value? Often it is an outside trigger (a piece of mail
+arrives, you get a phone call) but it can also be a time-based trigger (you do
+something every day at 10am) or observation (there are no more orders in the
+inbox to process, so do something else).
+
+Whatever it is, it is important to capture it as part of the design. We call these
+things Domain Events.
+
+Domain events are the starting point for almost all of the business processes
+we want to model. For example “New order form received” is a domain event
+which will kick off the order-taking process.
+
+Domain events are always written in the past tense – something happened –
+because it’s a fact that can’t be changed.
+                                                Chapter 1. Introducing Domain-Driven Design   •8
+
+Using Event Storming to Discover the Domain
+There are number of ways to discover events in a domain, but one which is
+particularly suitable for a DDD approach is Event Storming, which is a collab-
+orative process for discovering business events and their associated workflows.
+
+In event storming, you bring together a variety of people (who understand
+different parts of the domain) for a facilitated workshop. The attendees should
+include not just developers and domain experts, but all the other stakeholders
+who have an interest in the success of the project. As event stormers like to
+say: “Anyone who has questions, and anyone who has answers.” The workshop
+should be held in a room that has a lot of wall space, and the walls are covered
+with paper or whiteboard material so that the participants can post or draw
+sticky notes on them. At the end of a successful session, the walls will be
+covered with hundreds of these notes.
+
+During the workshop, people write down business events on the sticky notes
+and post them on the wall. Other people may respond by posting notes
+summarizing the business workflows which are triggered by these events.
+These workflows, in turn, often lead to other business events being created.
+In addition, the notes can often be organized into a timeline, which may well
+trigger further discussion among the group. The idea is to get all the attendees
+to participate in posting what they know, and asking questions about what
+they don’t know. It’s a highly interactive process that encourages everyone
+to be involved. For more detail on event storming in practice, see the book of
+the same name by Alberto Brandolini2, the creator of this technique.
+
+Discovering the Domain: An Order-Taking System
+In this book, we’ll take a realistic business problem – an order-taking system
+– and use it to explore design, domain modeling, and implementation.
+
+Say that we are called in to help a small manufacturing company, Widgets
+Inc, to automate their order-taking workflow. Max, the manager of Widgets
+Inc, explains:
+     “We’re a tiny company that manufactures parts for other companies: widgets,
+     gizmos, etc. We’ve been growing quite fast and our current processes are not able
+     to keep up. Right now, everything we do is paper-based, and we’d like to comput-
+     erize all that so that our staff can handle larger volumes of orders. In particular,
+     we’d like to have a self-service web site so that customers can do some tasks
+     themselves. Things like placing an order, checking order status, etc.”
+
+
+
+2.   http://eventstorming.com
+                                         Understanding the Domain Through Business Events   •9
+
+Sounds good. So now what do we do? Where should we start?
+
+The first guideline says “focus on business events,” so let’s use an event-
+storming session for that. Here’s how one might start out at Widgets Inc.
+     You: “Someone start by posting a business event!”
+
+     Ollie: “I’m Ollie from the order-taking department. Mostly we deal with orders and
+     quotes coming in.”
+
+     You: “What triggers this kind of work?”
+
+     Ollie: “When we get forms sent to us by the customer in the mail.”
+
+     You: “So the events would be something like ‘Order form received’ and ‘Quote
+     form received’?”
+
+     Ollie: “Yes. Let me put those up on the wall then.”
+
+     Sam: “I’m Sam from the shipping department. We fulfill those orders when they’re
+     signed off.”
+
+     You: “And how do you know when to do that?”
+
+     Sam: “When we get an order from the order-taking department.”
+
+     You: “What would you call that as an event?”
+
+     Sam: “How about ‘Order Available’?”
+
+     Ollie: “We call an order that’s completed and ready to ship a ‘Placed Order.’ Can
+     we agree on using that term everywhere?”
+
+     Sam: “So ‘Order Placed’ would be the event we care about, yes?”
+
+You get the idea. After a while, we might have list of posted events like this:
+
+ •   ‘Order form received’
+ •   ‘Order placed’
+ •   ‘Order shipped’
+ •   ‘Order change requested’
+ •   ‘Order cancellation requested’
+ •   ‘Return requested’
+ •   ‘Quote form received’
+ •   ‘Quote provided’
+ •   ‘New customer request received’
+ •   ‘New customer registered’
+
+Here’s what the wall might look like at this point:
+                                           Chapter 1. Introducing Domain-Driven Design   • 10
+
+  order form       Place          order               Ship                order
+  received         Order          placed              Order               shipped
+
+ change                       return
+ requested                    requested
+    cancellation
+    requested
+ quote form                       quote
+ received                         provided
+
+  new                        new customer
+  customer                   reqistered
+Some of the events have business workflows posted next to them, such as
+“place order” and “ship order,” and we’re beginning to see how the events
+connect up into larger workflows.
+
+We can’t cover a full event-storming session in detail, but let’s look at some
+of the aspects of requirements gathering that event storming facilitates:
+
+ • A shared model of the business
+
+   As well as revealing the events, a key benefit of event storming is that the
+   participants develop a shared understanding of the business, because
+   everyone is seeing the same thing on the big wall. Just like DDD, event-
+   storming has an emphasis on communication and shared models, and
+   avoiding “us” vs. “them” thinking. Not only will attendees learn about
+   unfamiliar aspects of the domain, but they might realize that their
+   assumptions about other teams are wrong, or perhaps even develop
+   insights that can help the business improve.
+
+ • Awareness of all the teams
+
+   Sometimes it is easy to focus on just one aspect of the business – the one
+   that you are involved in – and forget that other teams are involved and
+   may need to consume data that you produce. If all the stakeholders are
+   in the room, anyone who is being overlooked can speak out.
+       “I’m Blake from the billing department. Don’t forget about us. We need to
+       know about completed orders too, so we can bill people and make money for
+       the company! So we need to get an ‘Order placed’ event as well.”
+                                       Understanding the Domain Through Business Events   • 11
+
+ • Finding gaps in the requirements
+
+   When the events are displayed on a wall in a timeline, missing require-
+   ments often become very clear:
+       Max: “Ollie, when you’ve finished preparing an order, do you tell the customer?
+       I don’t see that on the wall.”
+
+       Ollie: “Oh yes, I forgot. When the order has been placed successfully, we send
+       an email to the customer saying that we have got it and are about to ship it.
+       That’s another event I suppose: ‘Order acknowledgment sent to customer’.”
+
+   If the question doesn’t have a clear answer, then the question itself should
+   be posted on the wall as a trigger for further discussion. And if a particular
+   part of the process creates a lot of debate or disagreement, don’t treat it
+   as a problem, treat it as an opportunity! You will probably learn a lot by
+   drilling into these areas. It is common for the requirements to be fuzzy at
+   the beginning of a project, so documenting the questions and debate in
+   this very visible way makes it clear that more work needs to be done, and
+   discourages starting the development process prematurely.
+
+ • Connections between teams
+
+   The events can be grouped in a timeline, and it often becomes clear that
+   one team’s output is another team’s input.
+
+   For example, when the order-taking team has finished processing an
+   order, they need to signal that a new order has been placed. This “order
+   placed” event becomes the input for the Shipping and Billing teams:
+
+
+              Order-taking team                               Shipping team
+        order form      Place          order              Ship           order
+        received        Order          placed             Order          shipped
+                                         Acknowledgment                       Dispatch
+                                         sent to                              message sent
+                                         customer                             to customer
+        quote form
+        received
+
+
+The technical details of how the teams are connected is not relevant at this
+stage. We want to focus on the domain, not the pros and cons of message
+queues vs. databases.
+
+ • Awareness of reporting requirements
+                                               Chapter 1. Introducing Domain-Driven Design              • 12
+
+It’s easy to focus only on processes and transactions when trying to under-
+stand the domain. But any business needs to understand what happened in
+the past – reporting is always part of the domain! Make sure that reporting
+and other read-only models (such as view models for the UI) are included in
+the event storming session.
+
+Expanding the Events to the Edges
+It is often useful to follow the chain of events out as far as you can, to the
+boundaries of the system. To start, you might ask if any events occur before
+the left-most event.
+   You: “Ollie, what triggers the ‘Order form received’ event? Where does that come
+   from?”
+
+   Ollie: “We open the mail every morning, and the customers send in order forms
+   on paper, which we open up and classify as orders or quotes”
+
+   You: “So it looks like we need a ‘Mail Received’ event as well?”
+
+In the same way, we might extend the events on the shipping side of the
+business.
+   You: “Sam, are there any possible events after you ship the order to the customer?”
+
+   Sam: “Well, if the order is “signed-for delivery,” we’ll get a notification from the
+   courier service. So let me add a ‘Shipment received by customer’ event”
+
+Extending the events out as far as you can in either direction is another great
+way of catching missing requirements. You might find that the chain of events
+ends up being longer than you expect.
+
+                     Order-taking team
+                                                                Shipping team
+                                                                                               Customer
+                     order form   Place   order             Ship         order                 signed for
+                     received     Order   placed            Order        shipped               delivery
+   order form Order or                                                          Dispatch
+   received in Quote?                      Acknowledgment                       message sent
+   mail                                    sent to                              to customer
+                                           customer
+                    quote form
+                    received
+
+
+Notice that the domain expert is talking about paper forms and printed mail.
+The system that we want to replace this with will be computerized, but there
+is a lot to learn by thinking about paper-based systems in terms of workflow,
+prioritization, edge cases, and so on. Let’s focus on understanding the domain
+for now; only when we understand it thoroughly should we think about how
+to implement a digital equivalent.
+                                          Understanding the Domain Through Business Events   • 13
+
+  Workflows, scenarios, and use-cases
+  We have many different words to describe business activities: "workflows," "scenarios,"
+  "use-cases," "processes," and so on. They are often used interchangeably, but in this
+  book, we’ll try to be a bit more precise.
+
+    • A Scenario describes a goal that a customer (or other user) wants to achieve,
+      such as placing an order. It is similar to a "story" in Agile development. A Use-
+      Case is a more detailed version of a scenario, which describes in general terms
+      the user interactions and other steps that the user needs to take to accomplish
+      a goal. Both "scenario" and "use-case" are user-centric concepts, focused on how
+      interactions appear from the user’s point of view.
+
+    • A Business Process describes a goal that the business (rather than an individual
+      user) wants to achieve. It’s similar to a "scenario," but with a business-centric
+      focus rather than a user-centric focus.
+
+    • A Workflow is a detailed description of part of a business process. That is, it lists
+      the exact steps that an employee (or software component) needs to do to
+      accomplish a business goal or sub-goal. We’ll limit a "workflow" to what a single
+      person or team can do, so that when a business process is spread over multiple
+      teams (as the ordering process is), we’ll divide the overall business process into
+      a series of smaller workflows, which are then coordinated in some way.
+
+
+
+Indeed, in many business processes the whole paper vs. digital distinction is
+irrelevant – understanding the high-level concepts of the domain does not
+depend on any particular implementation at all. The domain of accounting
+is a good example; the concepts and terminology have not changed for hun-
+dreds of years.
+
+Also, when converting a paper-based system to a computerized system, there
+is often no need to convert all of it at once. We should look at the system as
+a whole, and start by converting only the parts that would benefit most.
+
+Documenting Commands
+Once we have a number of these events on the wall, we might ask: “What
+made these domain events happen?” Somebody or something wanted an
+activity to happen. For example, the customer wanted us to receive an order
+form, or your boss asked you to do something.
+
+We call these requests Commands in DDD terminology (not be confused with
+the Command pattern used in OO programming). Commands are always
+written in the imperative: “do this for me.”
+                                                  Chapter 1. Introducing Domain-Driven Design   • 14
+
+Of course, not all commands actually succeed – the order form might have
+got lost in the mail, or you’re too busy with something more important to help
+your boss. But if the command does succeed, it will initiate a workflow which
+in turn will create corresponding domain events. Here are some examples:
+
+ • If the command was: “Make X happen,” then, if the workflow made X
+   happen, the corresponding domain event would be: “X happened.”
+ • If the command was: “Send an order form to Widgets Inc,” then, if the
+   workflow sent the order, the corresponding domain event would be: “Order
+   form sent.”
+ • Command: “Place an order”; domain event: “Order placed.”
+ • Command: “Send a shipment to customer ABC”; domain event: “Shipment
+   sent.”
+
+In fact, we will try to model most business processes in this way. An event
+triggers a command, which initiates some business workflow. The output of
+the workflow is some more events. And then, of course, those events can
+trigger further commands.
+
+                                                                         Event
+Event              Command                Business                           Event
+        triggers                          Workflow
+                                    Input:                                       Event
+                                                           Output:
+                                data needed            List of events
+                                for workflow
+This way of thinking about business processes – a pipeline with an input and
+some outputs – is an excellent fit with the way that functional programming
+works, as we will see later.
+
+Using this approach, then, the order taking process looks like this:
+
+                                                                          Order Placed
+                                                                          (for shipping)
+Order form              Place                  Place
+received     triggers   order                  Order                           Order Placed
+                                                                               (for billing)
+                                      Input:                   Output:
+                                  data needed             List of events
+                                 to place order           arising from a
+                                                           placed order
+For now, we will assume that every command succeeds, and the corresponding
+event happens. Later on, in Chapter 10, Implementation: Working with Errors,
+                                             Partitioning the Domain into Subdomains   • 15
+
+on page 197, we’ll see how to model failure – how to handle the cases when
+things go wrong and commands do not succeed.
+
+By the way, not all events need be associated with a command. Some events
+might be triggered by a scheduler or monitoring system, such as MonthEndClose
+for an accounting system or OutOfStock for a warehouse system.
+
+Partitioning the Domain into Subdomains
+We have now got a list of events and commands, and we have a good under-
+standing of what the various business processes are. But the big picture is
+still quite chaotic. We’ll have to tame it before we start writing any code.
+
+This brings us to our second guideline: “Partition the problem domain into
+smaller sub-domains.”
+
+When faced with a large problem, it is natural to break it into smaller compo-
+nents that can be addressed separately. And so it is here. We have a large
+problem: organizing the events around order taking; can we break it into
+smaller pieces?
+
+Yes, we can. It’s clear that there are various aspects of the “order taking
+process” that can be separated: the order-taking, the shipping, the billing
+and so on. As we know, the business already has separate departments for
+these areas, and that is a pretty strong hint that we can follow that same
+separation in our design. We will call each of these areas a domain.
+
+Now “domain” is a word with many meanings, but in the world of domain-
+driven design, we can define a “domain” as “an area of coherent knowledge.”
+Unfortunately that definition is too vague to be useful, so here’s an alternative
+definition of a domain: a “domain” is just that which a “domain expert” is
+expert in! This is much more convenient in practice: rather than struggling
+to provide a dictionary definition of what “billing” means, we can just say that
+“billing” is what people in the Billing department – the domain experts – do.
+
+We all know what a “domain expert” is; as programmers we ourselves are
+often expert in a number of domains. For example, you could be an expert in
+the use of a particular programming language or in a particular area of pro-
+gramming such as games or scientific programming. And you might have
+knowledge of areas such as security, or networking, or low-level optimizations.
+All these things are “domains.”
+
+Within a domain, there might be areas which are distinctive as well. We call
+these sub-domains – a smaller part of a larger domain that has its own spe-
+cialized knowledge. For example “web programming” is a sub-domain of
+                                          Chapter 1. Introducing Domain-Driven Design   • 16
+
+“general programming.” And “JavaScript programming” is a sub-domain of
+web programming (at least, it used to be).
+
+Here’s a diagram showing some programming-related domains:
+
+
+
+
+           General programming
+
+                     Web programming
+                                                                 Web design
+               Javascript
+                                            CSS
+               programming
+
+                             Ruby on
+                             Rails
+
+                     Ruby programming
+
+
+You can see that domains can overlap. For example, the “CSS” sub-domain
+could be considered part of the “web programming” domain but also part of
+the “web design” domain. So we must be careful when partitioning a domain
+into smaller parts: it is tempting to want clear, crisp boundaries, but the real
+world is fuzzier than that.
+
+If we apply this domain-partitioning approach to our order taking system, we
+have something like this:
+                                           Creating a Solution Using Bounded Contexts   • 17
+
+
+
+                Order-taking                       Shipping
+                   domain                           domain
+                               Billing
+                               domain
+
+There is some overlap between the domains. An order-taker must know a
+little bit about how the billing and shipping departments work, a shipper
+must know a little bit about how the order-taking and billing departments
+work, and so on.
+
+As we have stressed before, if you want be effective when developing a solution,
+you need become a bit of a domain expert yourself. That means that, as
+developers, we will need to make an effort to understand the domains above
+more deeply than we have done so far.
+
+But let’s hold off on that for now and move on to the guidelines for creating
+a solution.
+
+Creating a Solution Using Bounded Contexts
+Understanding the problem doesn’t mean that building a solution is easy.
+The solution can’t possibly represent all the information in the original domain,
+nor would we want it to. We should only capture the information which is
+relevant to solving a particular problem – everything else is irrelevant.
+
+We therefore need to create a distinction between a “problem space” and a
+“solution space,” and they must be treated as two different things. To build
+the solution we will create a model of the problem domain, extracting only
+the aspects of the domain that are relevant and then recreating them in our
+solution space.
+                                                Chapter 1. Introducing Domain-Driven Design   • 18
+
+
+   Problem space (real world)                       Solution space (domain model)
+                                       design
+       Order-taking        Shipping   process            Order-taking     Shipping
+          domain            domain                         context        context
+                 Billing                                          Billing
+                 domain                                          context
+
+
+In the solution space, you can see that the domains and sub-domains in the
+problem world are mapped to what DDD terminology calls bounded contexts
+– a kind of subsystem in our implementation. Each bounded context is a mini
+domain model in its own right. We use the phrase “bounded context” instead
+of something like “subsystem” because it helps us stay focused on what is
+important when we design a solution: being aware of the context and being
+aware of the boundaries.
+
+Why “context”? Because each context represents some specialized knowledge
+in the solution. Within the context, we share a common language, and the
+design is coherent and unified. But, just as in the real world, information
+taken out of context can be confusing or unusable.
+
+Why “bounded”? In the real world, domains have fuzzy boundaries, but in
+the world of software we want to reduce coupling between separate subsystems
+so that they can evolve independently. We can do this using standard software
+practices such as having explicit APIs between subsystems and avoiding
+dependencies such as shared code. This means, sadly, that our domain
+model will never be as rich as the real world, but we can tolerate this in
+exchange for less complexity and easier maintenance.
+
+There is not always a one-to-one relationship between a domain in the problem
+space and a context in the solution space. Sometimes, for various reasons,
+a single domain is broken into multiple bounded contexts, or more likely,
+multiple domains in the problem space are modeled by only one bounded
+context in the solution space. This is especially common when there is a
+legacy software system in place that you need to integrate with.
+
+For example, in an alternative world, Widgets Inc might have already installed
+a software package that did order-taking and billing together in one system.
+If you need to integrate with this legacy system, you would probably need to
+treat it as a single bounded context, even though it covers multiple domains.
+                                                Creating a Solution Using Bounded Contexts   • 19
+
+
+   Problem space (real world)                      Solution space (domain model)
+                                       design
+       Order-taking        Shipping   process        Order-taking and       Shipping
+          domain            domain                     billing context      context
+                 Billing                              legacy system
+                 domain
+
+
+However you partition the domain, it’s important that each bounded context
+has a clear responsibility, because when we come to implement the model, a
+bounded context will correspond exactly to some kind of software component.
+The component could be implemented as a separate DLL, or a standalone
+service, or just as a simple namespace. The details don’t matter right now,
+but getting the partitioning right is important.
+
+Getting the Contexts Right
+Defining these bounded contexts sounds straightforward, but it can be tricky
+in practice. Indeed, one of the most important challenges of a domain-driven
+design is to get these context boundaries right.
+
+This is an art, not a science, but here are some guidelines that can help:
+
+ • Listen to the domain experts. If they all share the same language and focus
+   on the same issues, they are probably working in the same subdomain
+   (which maps to a bounded context).
+ • Pay attention to existing team and department boundaries. They are a
+   strong clue to what the business considers to be domains and subdomains.
+   Of course, this is not always true – sometimes people in the same
+   department are working at odds with each other. Conversely, there may
+   be people in different departments who collaborate very closely, which in
+   turn means that they might be working in the same domain.
+ • Don’t forget the “bounded” part of a bounded context. Watch out for scope
+   creep when setting boundaries. In a complex project with changing
+   requirements you need to be ruthless about preserving the “bounded”
+   part of the bounded context. A boundary that is too big or too vague is
+   no boundary at all. As the saying goes: “good fences make good neighbors.”
+ • Design for autonomy. If two groups contribute to the same bounded con-
+   text, they might end up pulling the design in different directions as it
+   evolves. Think of a three-legged race: two runners tied at the leg are much
+   slower than the two runners free to run independently. And so it is with
+   a domain model; it is always better to have separate and autonomous
+                                          Chapter 1. Introducing Domain-Driven Design   • 20
+
+   bounded contexts that can evolve independently than one mega-context
+   that tries to make everyone happy.
+ • Design for friction-free business workflows. If a workflow interacts with
+   multiple bounded contexts and is often blocked or delayed by them, con-
+   sider refactoring the contexts to make the workflow smoother, even if the
+   design becomes “uglier.” That is, always focus on business and customer
+   value, rather than any kind of “pure” design.
+
+Finally, no design is static, and any model must need to evolve over time as
+the business requirements change. We will discuss this further in Chapter
+13, Evolving a Design and Keeping It Clean, on page 271, where we will
+demonstrate various ways to adapt the order taking domain to new demands.
+
+Creating Context Maps
+Once we have defined these contexts we need a way to communicate the
+interactions between them – the big picture – without getting bogged down
+in the details of a design. In DDD terminology, these diagrams are called
+Context Maps.
+
+Think of a route map used for traveling. A route map doesn’t show you every
+detail; it focuses only on the main routes, so that you can plan your journey.
+For example, here’s a sketch of an airline route map:
+
+                                               United
+                    Boston                                      London
+                                              United
+     Delta
+                                         Lu   fthansa
+                          New York
+                                                                        Paris
+     Chicago                                      Air France
+                     United
+This diagram doesn’t show the details of each city, just the available routes
+between each city. The map’s only purpose is to help plan your flights. If you
+want to do something different, such as drive around New York, you’re going
+to need a different map (and some blood pressure pills).
+
+In the same way, a context map shows the various bounded contexts and
+their relationships at a high level. The goal is not to capture every detail, but
+to provide a view of the system as a whole. For example, this is what we have
+so far for the order taking system:
+                                            Creating a Solution Using Bounded Contexts   • 21
+
+
+
+                    Customer
+   Order/Quote
+     received                     Quote
+                                 returned
+
+                      Order-taking
+                        context
+                        r
+                   Ordae ced
+                    pl
+     Shipping                                Billing
+     context                                context
+In making this map, we are not concerned with the internal structure of the
+shipping context, only that it receives data from the order-taking context. We
+say informally that the shipping context is downstream and the order-taking
+context is upstream.
+
+Obviously the two contexts will need to agree on a shared format for the
+messages that they exchange. In general, the upstream context has more
+influence over the format, but sometimes the downstream context is inflexible
+(such as working with a legacy system) and either the upstream context must
+adapt to that, or some sort of translator component will be needed as an
+intermediary. (This is discussed further in Contracts Between Bounded Con-
+texts, on page 52.)
+
+Finally, it’s worth pointing out that in our design we can fit everything into
+one map (so far). In more complex designs, you’d naturally want to create a
+series of smaller maps, each focusing on specific subsystems.
+
+Focusing on the Most Important Bounded Contexts
+We have a few obvious bounded contexts at this point, and we may find that
+we discover more as we work with the domain. But are they all equally
+important? Which ones should we focus on when we start development?
+
+Generally, some domains are more important than others. These are the core
+domains: the ones that provide a business advantage, the ones that bring in
+the money.
+                                         Chapter 1. Introducing Domain-Driven Design   • 22
+
+Other domains may be required but are not core. These are called supportive
+domains, and if they are not unique to the business, are called generic
+domains.
+
+For example, for Widgets Inc, the order-taking and shipping domains might
+be core, because their business advantage is their excellent customer service.
+The billing domain would be considered as supportive, and delivery of the
+shipments could be considered generic, which means they can safely outsource
+it.
+
+Of course, reality is never as simple. Sometimes the core domain is not what
+you might expect. An e-commerce business might find that having items in
+stock and ready to ship is critical to customer satisfaction, in which case
+inventory management might become a core domain, just as important to the
+success of the business as an easy-to-use web site.
+
+Sometimes, there is no consensus as to what is the most important domain;
+each department may think that their domain is the most important. And
+sometimes, the core domain is simply whatever your client wants you to work
+on.
+
+In all cases though, it is important to prioritize and not to attempt to imple-
+ment all the bounded contexts at the same time – that often leads to failure.
+Focus instead on those bounded contexts that add the most value, and then
+expand from there.
+
+Creating a Ubiquitous Language
+We said earlier that the code and the domain expert must share the same
+model.
+
+That means that things in our design must represent real things in the domain
+expert’s mental model. That is, if the domain expert calls something an “Order”
+then we should have something called an Order in the code that corresponds
+to it and that behaves the same way.
+
+And conversely, we should not have things in our design that do not represent
+something in the domain expert’s model. That means no terms like OrderFactory,
+OrderManager, OrderHelper, etc. A domain expert would not know what you meant
+by these words. Of course, some technical terms will have to occur in the
+codebase, but you should avoid exposing them as part of the design.
+
+The set of concepts and vocabulary that is shared between everyone on the
+team is called the Ubiquitous Language – the “everywhere language.” This is
+the language that defines the shared mental model for the business domain.
+                                      Summarizing the Concepts of Domain-Driven Design   • 23
+
+And, as its name implies, this language should used everywhere in the project,
+not just in the requirements but in the design and, most importantly, the
+source code.
+
+The construction of the ubiquitous language is not a one-way process dictated
+by the domain expert – it is a collaboration between everyone on the team.
+Nor should you expect the ubiquitous language to be static – it is always a
+work in progress. As the design evolves, be prepared to discover new terms
+and new concepts, and let the ubiquitous language evolve correspondingly.
+We will see this happen in the course of this book.
+
+Finally, it is important to realize that you often cannot have a single Ubiquitous
+Language that covers all domains and contexts. Each context will have a
+“dialect” of the Ubiquitous Language, and the same word can mean different
+things in different dialects. For example, “class” means one thing in the “object-
+oriented programming” domain, but a completely different thing in the “CSS”
+domain. Trying to make a word like “Customer” or “Product” mean the same
+in different contexts can lead to complex requirements at best, and serious
+design errors at worst.
+
+Indeed, our event storming session demonstrates this exact issue. All the
+attendees used the word “Order” when describing events. But we might well
+find that the shipping department has a subtly different definition of “Order”
+from the billing department. The shipping department probably cares about
+inventory levels, the quantity of items, and so on, while the billing department
+probably cares more about prices and money. If we use the same word “order”
+everywhere without specifying the context for its use, we might well run into
+some painful misunderstandings.
+
+Summarizing the Concepts of Domain-Driven Design
+We’ve been introduced to a lot of new concepts and terminology, so let’s
+quickly summarize them in one place before moving on.
+
+ • A Domain is an area of knowledge associated with the problem we are
+   trying to solve. Alternatively a “domain” is that which a “domain expert”
+   is expert in.
+ • A Domain Model is a set of simplifications that represent those aspects of
+   a domain that are relevant to a particular problem. The domain model is
+   part of the solution space, while the domain that it represents is part of
+   the problem space.
+ • The Ubiquitous Language is a set of concepts and vocabulary associated
+   with the domain, shared by both the team members and the source code.
+                                         Chapter 1. Introducing Domain-Driven Design   • 24
+
+ • A Bounded Context is a subsystem in the solution space with clear
+   boundaries that distinguish it from other subsystems. A bounded context
+   often corresponds to a subdomain in the problem space. A bounded con-
+   text also has its own set of concepts and vocabulary, its own dialect of
+   the Ubiquitous Language.
+ • A Context map is a high-level diagram showing a collection of bounded
+   contexts and the relationships between them.
+ • A Domain Event is a record of something that happened in the system. It
+   is always described in the past tense. An event often triggers additional
+   activity.
+ • A Command is a request for some process to happen, triggered by a person
+   or another event. If the process succeeds, the state of the system changes
+   and one or more Domain Events are recorded.
+
+Wrapping Up
+At the beginning of the chapter, we emphasized the importance of creating a
+shared model of the domain and solution – a model that is the same for the
+development team and the domain experts.
+
+We then discussed four guidelines to help us do that:
+
+ •   Focus on events and processes rather than data.
+ •   Partition the problem domain into smaller sub-domains.
+ •   Create a model of each sub-domain in the solution.
+ •   Develop an “everywhere language” that can be shared between everyone
+     involved in the project.
+
+Let’s see how we applied them to the order-taking domain.
+
+Events and Processes
+The event-storming session quickly revealed all the major domain events in
+the domain. For example, we learned that the order-taking process is triggered
+by receiving an order form in the mail, and that there are workflows for pro-
+cessing a quote, for registering a new customer, and so on.
+
+We also learned that when the order-taking team finished processing an order,
+that event triggered the shipping department to start the shipping process,
+and the billing department to start the billing process.
+
+There are many more events and processes that could be documented, but
+we will focus primarily on this one workflow for the rest of this book.
+                                                                             Wrapping Up   • 25
+
+Subdomains and Bounded Contexts
+It appears that we have discovered three subdomains so far: “Order-taking,”
+“Shipping,” and “Billing.” Let’s check our sense of this by using our “a domain
+is what a domain-expert is expert in” rule.
+    You: “Hey Ollie, do you know how the billing process works?”
+
+    Ollie: “A little bit, but you should really ask the billing team if you want the details.”
+
+Billing is a separate domain: confirmed!
+
+We then defined three bounded contexts to correspond with these subdomains,
+and created a context map that shows how these three contexts interact.
+
+Which one is the core domain that we should focus on? We should really
+consult with Max the manager to decide where automation can add most
+value, but for now, let’s assume that it is the order-taking domain that we
+will implement first. If needed, the output of the domain can be converted to
+paper documents so that the other teams can continue with their existing
+processes without interruption.
+
+The Ubiquitous Language
+So far we have terms like “Order Form,” “Quote” and “Order,” and no doubt
+we will discover more as we drill into the design. To help maintain a shared
+understanding, it would be a good idea to create a living document or wiki
+page that lists these terms and their definitions. This will help to keep everyone
+aligned, and will also help new team members get up to speed quickly.
+
+What’s Next?
+We’ve now got an overview of the problem and an outline of a solution, but
+we have still got many questions that need answering before we can create a
+low-level design or start coding.
+
+What happens, exactly, in the order-processing workflow? What are the inputs
+and outputs? Are there any other contexts that it interacts with? How does
+the shipping team’s concept of an “Order” differ from the billing team’s? And
+so on.
+
+In the next chapter, we’ll dive deeply into the order-placing workflow and
+attempt to answer these questions.
+                                                                            CHAPTER 2
+
+
+
+                              Understanding the Domain
+In the previous chapter, we looked at the big picture – an overview of the
+domain and the key business events – and we divided the solution space into
+a number of bounded contexts. Along the way, we learned about Domain-
+Driven Design and the importance of a shared model.
+
+In this chapter, we’re going to take one particular workflow and try to
+understand it deeply. What exactly triggers it? What data is needed? What
+other bounded contexts does it need to collaborate with?
+
+We’ll see that careful listening is a key skill in this process. We want to avoid
+imposing our own mental model on the domain.
+
+Interview with a Domain Expert
+In order to get the understanding we want, let’s do an in-depth interview with
+a domain expert: Ollie from the order-taking department.
+
+Now, domain experts tend to be busy, and generally can’t spend too much
+time with developers, but one nice thing about the commands/events approach
+is that, rather than needing all-day meetings, we can have a series of short
+interviews, each focusing on only one workflow, and a domain expert is more
+likely to be able to make time for this.
+
+In the first part of the interview, we want to stay at a high level and focus
+only on the inputs and outputs of the workflow. This will help us avoid getting
+swamped with details that are not (yet) relevant to the design.
+    You: “Ollie, let’s talk about just one workflow, the order placing process. What
+    information do you need to start this process?”
+
+    Ollie: “Well it all starts with this piece of paper: the order form that customers fill
+    out and send us in the mail. In the computerized version, we want the customer
+    to fill out this form online.”
+                                                  Chapter 2. Understanding the Domain   • 28
+
+Ollie shows you something that looks like this:
+
+
+
+   Order Form
+
+   Customer Name:
+
+   Billing Address:                          Shipping Address:
+
+
+
+
+   Order:        Quote:          Express Delivery:
+
+    Product Code             Quantity        Cost
+
+
+
+
+                               Subtotal
+                               Shipping
+                                    Total
+
+
+At this point you might think that this is a typical e-commerce model.
+   You: “I see. So the customers will browse the product pages on the web site and
+   then click to add items to the shopping cart, and then check out?”
+
+   Ollie: “No, of course not. Our customers already know exactly what they want to
+   order. We just want a simple form where they can type in the product codes and
+   quantities. They might be ordering two or three hundred items at once, so clicking
+   around in product pages to find each item first would be terribly slow.”
+
+This is an important lesson. You’re supposed to be learning about the domain,
+so resist the urge to jump to conclusions about anything, such as (in this
+case) how the customers will use the system. Good interviewing means doing
+lots of listening! The best way to learn about a domain is to pretend you’re
+an anthropologist and avoid having any pre-conceived notions. Ideally, we
+would do in-depth research (such as observing people at work, usability
+                                                           Interview with a Domain Expert   • 29
+
+testing, and so on) before we commit to a design. In this case, though, we’ll
+take the risk and skip these steps, and trust that Ollie understands the cus-
+tomer’s needs well enough to represent them to us.
+
+Understanding the Non-Functional Requirements
+This would be a good time to take a step back and discuss the context and
+scale of the workflow.
+     You: “Sorry, I misunderstood who the customer was. Let me get some more
+     background information. For example, who uses this process and how often?”
+
+     Ollie: “We’re a B2B company1 – our customers are other businesses. We have
+     about 1000 customers, and they typically place an order every week.”
+
+     You: “So about two hundred orders per business day. Does it ever get much
+     busier than that, say in the holiday season?”
+
+     Ollie: “No. It’s pretty consistent all year.”
+
+This is good – we know that we don’t need to design for massive scale, nor
+do we have to design for spiky traffic. Now, what about customer expectations
+of the system?
+     You: “And you say that the customers are experts?”
+
+     Ollie: “They spend all day purchasing things, so yes, they are expert in that domain.
+     They know what they want – they just need an efficient way to get it.”
+
+This information affects how we think about the design. A system designed
+for beginners will often be quite different from a system designed for experts.
+If the customers are experts, then we don’t want to put barriers in their way
+or anything else that will slow them down.
+     You: “What about latency? How quickly do they need a response?”
+
+     Ollie: “They need an acknowledgment by the end of the business day. For our
+     business, speed is less important than consistency. Our customers want to know
+     that we will respond and deliver in a predictable way.”
+
+These are typical requirements for a B2B application: things such as pre-
+dictability, robust data handling, and an audit trail of everything that happens
+in case there are any questions or disputes.
+
+Understanding the Rest of the Workflow
+Let’s keep going with the interview.
+     You: “OK, what do you do with each form?”
+
+
+1.   https://en.wikipedia.org/wiki/Business-to-business
+                                                      Chapter 2. Understanding the Domain   • 30
+
+    Ollie: “First we check that the product codes are correct. Sometimes there are
+    typos or the product doesn’t exist.”
+
+    You: “How you know if a product doesn’t exist?”
+
+    Ollie: “I look it up in the product catalog. It’s a leaflet listing all the products and
+    their prices. A new one is published every month. Look, here’s the latest one sitting
+    on my desk.”
+
+The product catalog sounds like another bounded context. We’ll make a note
+to revisit it in detail later, but for now, we’ll skip it and just keep track of what
+this workflow needs from that context: the list of products and their prices.
+    You: “And then?”
+
+    Ollie: “Then we add up the cost of the items, write that into the “Total” field at the
+    bottom, and then make two copies: one for the shipping department and one for
+    the billing department. We keep the original in our files.”
+
+    You: “And then?”
+
+    Ollie: “Then we scan the order and email it to the customer so that they can see
+    the prices and the amount due. We call this an ‘order acknowledgment.’”
+
+OK, that makes sense so far. At some point you will want to go deeper into
+understanding how the validation is done, and how the orders are transmitted
+to the other departments. One more question though.
+    You: “What are those boxes marked ‘Quote’ and ‘Order’ for?”
+
+    Ollie: “If the ‘Order’ box is checked, then it’s an order and if the ‘Quote’ box is
+    checked, then it’s a quote. Obviously.”
+
+    You: “So what’s the difference between a ‘Quote’ and an ‘Order’?”
+
+    Ollie: “A ‘Quote’ is when the customer just wants us to calculate the prices, but
+    not actually dispatch the items. With a quote, we just add prices to the form and
+    send it back to the customer. We don’t send copies to the shipping and billing
+    departments because there’s nothing for them to do. “
+
+    You: “I see. Orders and quotes are similar enough that you use the same order
+    form for both, but they have different workflows associated with them.”
+
+
+Thinking About Inputs and Outputs
+Let’s pause to document what we’ve learned about the inputs and outputs of
+the workflow so far.
+
+First, the input is clearly an “Order Form” (the exact definition of which we
+need to flesh out soon).
+                                     Fighting the Impulse to Do Database-Driven Design   • 31
+
+But what is the output? We have seen the concept of a “completed order”
+(based on the input but validated and with prices calculated). But that can’t
+be the output, because we don’t do anything with it directly. What about the
+“order acknowledgment” then? Could that be the output? Probably not.
+Sending the order acknowledgment is a side effect of the order-placing work-
+flow itself, not an output.
+
+The output of a workflow should always be the events that it generates, the
+things that trigger actions in other bounded contexts. In our case, the output
+of the workflow would be something like an “OrderPlaced” event, which is
+then sent to the shipping and billing contexts. (How the event actually gets
+to those departments is a discussion for later, it’s not relevant to the design
+right now.)
+
+Let’s diagram the “Place Order” workflow with its inputs and outputs:
+
+          Other input:
+          Product catalog
+
+
+
+Input:               Workflow:                     Output:
+Order form           Place Order                   PlacedOrder event
+                                                   (to notify Shipping
+                                                   and Billing contexts)
+
+                                         Side Effects:
+                                         Send 'order acknowledgment'
+                                         to customer
+
+Fighting the Impulse to Do Database-Driven Design
+At this point, if you are like most developers, you can’t help but start
+sketching out a low-level design and implementation immediately.
+
+For example, you might look at that order form and see that it consists of
+customer information, some addresses, a list of order lines, and so on.
+
+If you have a lot of database experience, your first instinct might be to think
+about tables and the relationships between them. You might envision an Order
+table and an OrderLine table and Customer, Address and Product tables. And then
+you will probably want to describe the relationships between them like this:
+

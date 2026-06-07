@@ -1,0 +1,1753 @@
+Isaac Abraham
+Forewords by Phillip Carter and Tomas Petricek
+
+
+
+
+           MANNING
+       The mental model of the development process in F#
+
+
+                                                                               Domain
+               Start here       Developer
+                                                                               expert
+
+
+
+                                                   Collaboration
+
+
+                                                                               Iterative
+                                                     Domain                    process
+                                                                                                     Script
+               General                              exploration
+               coding loop
+                                                    Outcomes
+
+                                                                      Core application domain
+
+
+
+                                    Business                               Business
+                                      rules                                  logic
+
+
+
+                                Encoded                                                Conditional
+                                                                                       logic and
+                                                                                       mapping
+                                                      Define       Contracts
+         SQL                                          types
+
+                                Validation
+
+
+
+                                Read and               Inputs                Create
+etc.    JSON                    write data                                 functions
+
+
+                                                                           Outputs
+                                                Finished modelling
+          In-
+        memory
+                                                                                       Fix errors
+
+                                                     Compile-
+                                                       time
+                                                      checks
+
+
+
+                                               Everything compiles!
+                                                                           Testing/running your app
+                                                                           Minimal/no debugging
+
+
+          Web
+                                                                                                     Android
+        browser
+                       Compile to
+                       javascript                                                      xamarin
+                                        Web          Console             Mobile
+
+
+         Web
+                                                                                                      iOS
+        server
+                                                        etc
+                        Praise for the previous edition
+
+
+Leads you on a journey of F# that's both pragmatic and relevant.
+
+                                         —From the Foreword by Dustin Campbell, Microsoft
+
+Does a great job of explaining F# clearly and effectively.
+
+                                        —From the Foreword by Tomas Petricek, fsharpWorks
+
+A wonderful introduction to the subtleties of the F# language. You'll be productive within minutes!
+
+                                                                    —Jason Hales, Digital Tier
+
+Combines excellent explanations, real-world use cases, and a steady supply of questions and
+exercises to make sure you really understand what is being taught. Highly recommended!
+
+                                                                —Joel Clermont, GrowthPoint
+
+Puts the FUN into functional programming with F#.
+
+                                                               —Stephen Byrne, Action Point
+
+This is an excellent book, and I'd strongly recommend it to any C# developer interested in learning
+a functional language.
+
+                                                                   —Anne Epstein, Headspring
+
+This is a great resource to learn F#.
+
+                                                        —Bruno Sonnino, Revolution Software
+
+The power of F# unlocked in one book!
+
+                                                                         —Dane Balia, Hetzner
+       F# in Action
+               A REVISED EDITION OF GET PROGRAMMING WITH F#
+
+
+
+                                    ISAAC ABRAHAM
+FOREWORDS BY PHILLIP CARTER AND TOMAS PETRICEK
+
+
+
+
+                                         MANNING
+                                         SHELTER ISLAND
+For online information and ordering of this and other Manning books, please visit
+www.manning.com. The publisher offers discounts on this book when ordered in quantity.
+For more information, please contact
+      Special Sales Department
+      Manning Publications Co.
+      20 Baldwin Road
+      PO Box 761
+      Shelter Island, NY 11964
+      Email: orders@manning.com
+
+
+©2024 by Manning Publications Co. All rights reserved.
+
+
+No part of this publication may be reproduced, stored in a retrieval system, or transmitted, in
+any form or by means electronic, mechanical, photocopying, or otherwise, without prior written
+permission of the publisher.
+
+
+Many of the designations used by manufacturers and sellers to distinguish their products are
+claimed as trademarks. Where those designations appear in the book, and Manning Publications
+was aware of a trademark claim, the designations have been printed in initial caps or all caps.
+
+
+Recognizing the importance of preserving what has been written, it is Manning’s policy to have
+the books we publish printed on acid-free paper, and we exert our best efforts to that end.
+Recognizing also our responsibility to conserve the resources of our planet, Manning books
+are printed on paper that is at least 15 percent recycled and processed without the use of
+elemental chlorine.
+
+
+The authors and publisher have made every effort to ensure that the information in this book
+was correct at press time. The authors and publisher do not assume and hereby disclaim any
+liability to any party for any loss, damage, or disruption caused by errors or omissions, whether
+such errors or omissions result from negligence, accident, or any other cause, or from any usage
+of the information herein.
+
+
+      Manning Publications Co.               Development editor:     Dustin Archibald
+      20 Baldwin Road                           Technical editor:    Michael Ciccotti
+      PO Box 761                                  Review editors:    Adriana Sabo and Dunja Nikitović
+      Shelter Island, NY 11964                 Production editor:    Kathy Rossland
+                                                     Copy editor:    Alisa Larson
+                                                     Proofreader:    Jason Everett
+                                           Technical proofreader:    Sudipta Mukherjee
+                                                      Typesetter:    Dennis Dalinnik
+                                                  Cover designer:    Marija Tudor
+
+
+
+ISBN: 9781633439535
+Printed in the United States of America
+                                         brief contents
+ 1   ■   Introducing F# 1
+ 2   ■   Hands on with F# 10
+ 3   ■   F# Syntax Basics    26
+ 4   ■   F# Fundamentals      46
+ 5   ■   Shaping data   64
+ 6   ■   Functions and modules       82
+ 7   ■   Working with collections        101
+ 8   ■   Patterns and unions       124
+ 9   ■   Building rich domains      145
+10   ■   Working effectively with data         166
+11   ■   F# Interop   185
+12   ■   Asynchronous programming 205
+13   ■   Web programming 222
+14   ■   Testing F# code     249
+15   ■   Pure functional programming            265
+16   ■   Where next? 287
+
+
+
+
+                        v
+                                                                  contents
+      foreword xiii
+      preface xvi
+      acknowledgments xviii
+      about this book xix
+      about the author xxii
+      about the cover illustration   xxiii
+
+
+1   Introducing F#
+     1.1    What is F#? 1
+                            1
+
+     1.2    Why F#? 2
+     1.3    When F#? 3
+     1.4    How will this book teach me F#?               4
+     1.5    How does F# work? 5
+                Collaborative exploration 5 Type-driven development 5
+                                                     ■
+
+
+
+                Trusting the compiler 7 An opinionated language 7
+                                                 ■
+
+
+
+                Data and functions 7 Separation of business logic and
+                                             ■
+
+
+
+                external systems 8 Varied targets 8
+                                       ■
+
+
+
+
+2   Hands on with F#
+     2.1
+                                10
+            Writing code the F# way                  10
+                What, not how 11 Composability 11 Data and
+                                        ■                     ■
+
+
+
+                behavior 12 Working with a smarter compiler 13
+                                ■
+
+
+
+
+                                       vi
+                                   CONTENTS                                                                         vii
+
+
+     2.2   F# and .NET 15
+     2.3   Creating your first F# program                                   16
+             Installing F#         16   ■
+                                                The .NET CLI                 16    ■
+                                                                                           Hello World in F#   17
+     2.4   Getting Started with Visual Studio Code                                            18
+             The Ionide extension                18   ■
+                                                              Exploring F# with VS Code                   18
+             Writing your first F#               19
+     2.5   REPL and scripts                 20
+             The F# REPL 20 Trying out FSI 21 Moving to interactive
+                                            ■                                          ■
+
+
+
+             scripts 22 State in the REPL 23 Creating your first
+                           ■                                                  ■
+
+
+
+             function 23
+     2.6   Development flows 24
+     2.7   Where scripts and the REPL fit in                                      24
+
+
+3   F# Syntax Basics
+     3.1   F# syntax basics
+                             26
+                                        26
+             Characteristics of F# syntax                     27   ■
+                                                                           The let keyword           29
+             Scoping 30
+     3.2   Type inference               35
+             Benefits of type inference 35 Type inference basics 36
+                                                               ■
+
+
+
+             Inferring generics 39 Diagnosing unexpected type inference
+                                                 ■
+
+
+
+             behavior 41 Limitations of type inference 43 Criticisms of
+                               ■                                                                 ■
+
+
+
+             type inference 43
+     3.3   Exercise answers              44
+
+
+4   F# Fundamentals
+     4.1   Expressions
+                               46
+                               46
+             Purity and side effects 47 Difficulties with statements
+                                                          ■
+                                                                                                          47
+             Expressions to the rescue 49 Expressions in F# 51 ■
+
+
+
+             Composability 52 Unit 53 Ignore 55
+                                            ■                      ■
+
+
+
+
+     4.2   Immutable data               56
+             The problem with mutability 56 Modeling with mutable      ■
+
+
+
+             and immutable data 58 Optimizing and opinionated
+                                                      ■
+
+
+
+             languages 59 Other benefits of immutable data 62
+                                   ■
+
+
+
+
+     4.3   Exercise Answers                 62
+
+
+5   Shaping data
+     5.1
+                      64
+           Composing types in F#                          64
+             Data and functions in F#                     65
+viii                                           CONTENTS
+
+
+            5.2   Tuples    65
+                    Tuple basics 66                    ■
+                                                           More on tuples                     66   ■
+                                                                                                       Costs and benefits
+                    of tuples 69
+            5.3   Records     70
+                    Defining, creating, and consuming records                                              70    ■
+                                                                                                                         More on
+                    records 73 Records and .NET 76
+                                   ■
+
+
+
+
+            5.4   Anonymous records                                 78
+                    Anonymous record tricks                          79
+            5.5   Tuples or records 80
+            5.6   Exercise answers 81
+
+
+       6   Functions and modules
+            6.1   Functions      82
+                                                           82
+
+                    The truth behind F# functions 83 Partially applying functions         ■
+                                                                                                                                            85
+                    Pipelines 85 Using records and tuples with functions 88
+                                           ■
+
+
+
+                    Tupled functions 89 Comparing functions and methods 89
+                                                                ■
+
+
+
+
+            6.2   Organizing code                          90
+                    Namespaces 90 Modules 92 Moving from script to
+                                                       ■                              ■
+
+
+
+                    application: A step-by-step exercise 93 Referencing programs               ■
+
+
+
+                    from scripts 96 Best practices for modules and namespaces 97
+                                                   ■
+
+
+
+                    Tips and tricks 98
+            6.3   Answers to exercises                              98
+
+
+       7   Working with collections
+            7.1   Higher-order functions 101
+                                                                101
+
+            7.2   Functional collection pipelines                                             103
+                    Imperative and declarative pipelines 104 Debugging                                 ■
+
+
+
+                    pipelines 106 Understanding the List module 107
+                                               ■
+
+
+
+                    Common List functions 110 Ranges, slices, and indexing■
+                                                                                                                                      111
+            7.3   Other collection types                              111
+                    Arrays 112 Sequences 113 ResizeArray 113
+                                       ■                                          ■
+
+
+
+                    Dictionary 113 Map 114 Set 115 More on
+                                                       ■                      ■                            ■
+
+
+
+                    Sequences 115 Comprehensions 116 Comparing the
+                                                   ■                                                   ■
+
+
+
+                    different collection types 117
+            7.4   Aggregations             117
+                    Imperative loops 119                        ■
+                                                                     Functional folds                      119       ■
+                                                                                                                         Simulating
+                    Sequences 121
+            7.5   Answers to exercises                              122
+                                      CONTENTS                                                               ix
+
+
+
+8    Patterns and unions
+      8.1
+                                      124
+            Introducing pattern matching                                    124
+              Exhaustive matching 125 Tuple matching 126      ■
+
+
+
+              Simplifying pattern matches: A worked example 127
+              Record matching 128 Type inference 129
+                                                  ■
+
+
+
+              When guards 129
+      8.2   More advanced pattern matching                                       130
+              Recursive matching 130 Nested or conditions 132
+                                                          ■
+
+
+
+              Binding symbols 132 Collection matching 132
+                                                 ■
+
+
+
+              Match vs. if/then 133
+      8.3   Discriminated unions                      134
+              Basics of discriminated unions 135 Pattern matching 137        ■
+
+
+
+              Exhaustive matching with discriminated unions 138
+              Nested types with discriminated unions 139 Single-case                   ■
+
+
+
+              discriminated unions 140
+      8.4   The F# type system                   143
+              ANDing types            143    ■
+                                                 ORing types                 143   ■
+                                                                                       ANDing values   143
+
+
+9    Building rich domains
+      9.1   Working with missing values
+                                            145
+                                                                           145
+              The billion-dollar mistake: Working with nulls 146 Options                       ■
+
+
+
+              are the answer 147 Option.map 148 Option.bind 150
+                                             ■                                     ■
+
+
+
+              Interop with .NET 151 Options and collections 153
+                                                      ■
+
+
+
+
+      9.2   Handling errors             153
+              Results 153 Handling multiple errors 155 Strongly typed
+                                  ■                                                        ■
+
+
+
+              errors 156 Exceptions 158 When to safely leave options and
+                          ■                                            ■
+
+
+
+              results 159 When to use options, results, and exceptions 159
+                              ■
+
+
+
+
+      9.3   Computation expressions 160
+      9.4   Domain modeling: A worked example                                          163
+
+
+10   Working effectively with data
+     10.1   Best practices            166
+                                                                  166
+
+              Data is data 167 Separation of data and functionality 168
+                                         ■
+
+
+
+              Don’t treat scripts as programs 169 Working with lists of      ■
+
+
+
+              results 169
+     10.2   Serialization of data                170
+              Deserializing JSON to F# 170 Acceptable alternatives to
+                                                                   ■
+
+
+
+              DTOs 173 Serializing F# into JSON 174
+                             ■
+x                                     CONTENTS
+
+
+         10.3   Type providers         175
+                  Working with the JSON type provider 175 Working with external     ■
+
+
+
+                  data sources 176 More data types from FSharp.Data 177
+                                        ■
+
+
+
+                  Best practices for type providers 178
+         10.4   Data visualization 179
+         10.5   Working with other data sources                             181
+                  The CLIMutable attribute           181          ■
+                                                                      Working with SQL 181
+         10.6   Tooling options         182
+
+
+    11   F# Interop
+         11.1
+                      185
+                Working with other .NET code                            185
+                  Consuming C# classes 185 Interfaces 188 Fluent
+                                                         ■                                    ■
+
+
+
+                  APIs 190 Tuples 191 Out parameters 191
+                              ■                      ■
+
+
+
+                  Object-based programming 191 F# wrappers 191    ■
+
+
+
+
+         11.2   Exposing F# to C#           194
+                  Core F# concepts 194 Tips and tricks
+                                                 ■
+                                                                                    195   ■
+                                                                                                  Introducing
+                  F# into existing codebases 195
+         11.3   Consuming NuGet packages                              197
+                  Working with NuGet package dependencies                               197       ■
+                                                                                                      Working with
+                  NuGet tools 198
+         11.4   The Fable project: F# and JavaScript                                199
+                  JavaScript to F#: A brief history 199                    ■
+                                                                               Introducing Fable             201
+
+
+    12   Asynchronous programming 205
+         12.1   What is asynchronous programming? 206
+                  Async and sync programming                     206   ■
+                                                                            A brief history of async
+                  on .NET 207
+         12.2   Asynchronous support in F# 209
+                  Tasks in .NET 209 Consuming Tasks 211 The task { }
+                                             ■                                                    ■
+
+
+
+                  block: F#’s async/await 213 Executing multiple Tasks in
+                                                             ■
+
+
+
+                  parallel 214 Benefits of Tasks’ computation expressions 215
+                                  ■
+
+
+
+                  The async block 216
+         12.3   Final thoughts on asynchronous workloads                                              218
+                  The importance of immutable data                     218      ■
+                                                                                    The viral nature of
+                  asynchronous workloads 219
+                               CONTENTS                                                                       xi
+
+
+
+13   Web programming
+     13.1
+                              222
+            The web and functional programming 222
+              Web programming on .NET and F#                       223         ■
+                                                                                   The HTTP
+              Context 224
+     13.2   Server-side web development in F# 225
+              Creating our first ASP.NET application 225 The HTTP                   ■
+
+
+
+              Handler 227 Composing HTTP Handlers together 229
+                               ■
+
+
+
+              Composing multiple routes 231 Writing our own HTTP
+                                                           ■
+
+
+
+              Handlers 232 Reading inputs 233 Validation 234
+                                   ■                                       ■
+
+
+
+
+     13.3   Functional patterns in a web application                                    235
+     13.4   Creating HTML views 237
+              Creating views through code 237 The ViewEngine DSL
+                                                               ■
+                                                                                                        237
+              Benefits of an F# DSL for HTML 239
+     13.5   Full-stack F# apps with SAFE Stack 241
+              Overview of SAFE Stack 241 Installing the SAFE Stack
+                                                       ■
+
+
+
+              template 243 The MVU pattern 245 Removing all
+                              ■                                                ■
+
+
+
+              ToDo items: A worked exercise 247
+
+
+14   Testing F# code
+     14.1
+                          249
+            Automated tests: The value proposition                                      249
+              F#: Types over tests     250
+     14.2   Basic unit testing in F# 253
+              Tests as functions 253 Expecto 254 Plugging Expecto into
+                                             ■                             ■
+
+
+
+              our code 254 Advantages of Expecto 256
+                              ■
+
+
+
+
+     14.3   Making testable code 258
+              Preferring pure functions where possible 258 Preferring smaller       ■
+
+
+
+              functions 258 Unit testing small function hierarchies 258
+                                   ■
+
+
+
+              Integration testing higher-level composed functions 259 Pushing                       ■
+
+
+
+              side effects to the boundaries of your code 259 Using higher-order    ■
+
+
+
+              functions to replace side effects 259 Don’t worry about
+                                                                   ■
+
+
+
+              encapsulation 260
+     14.4   Working with NUnit-style test frameworks                                     261
+     14.5   Other forms of testing 262
+              Performance testing      262       ■
+                                                     Property-based testing                   262
+
+
+15   Pure functional programming
+     15.1   A functional architecture pattern
+                                                      265
+                                                                       266
+              External and internal boundaries                 266     ■
+                                                                               Structuring larger
+              functional codebases 267
+xii                                 CONTENTS
+
+
+           15.2   Composing functions                         269
+                    The object-oriented approach to composition 270 Higher-order                ■
+
+
+
+                    functions 271 Dependency rejection 274 Procedural
+                                    ■                                               ■
+
+
+
+                    composition 275 What should you use and when? 276
+                                            ■
+
+
+
+
+           15.3   Working with low-level dependencies                           276
+                    A worked example: Working with a logging function 276
+                    Flipping dependencies with a bootstrapper 278 Pros and cons         ■
+
+
+
+                    of the wireup pattern 281 Applying the dependency rejection
+                                                               ■
+
+
+
+                    pattern 281
+           15.4   Working with effects                    282
+                    What are effects in F# and .NET? 283 Common effects     ■
+
+
+
+                    in F# 283 Map and Bind 284 Using Computation
+                                ■                                       ■
+
+
+
+                    Expressions to hide bind pipelines 285
+
+
+      16   Where next?
+           16.1
+                          287
+                  How do I start using F# in practice? 288
+                    Data analysis 288 Hobby projects 288 Coding
+                                                    ■                           ■
+
+
+
+                    challenges 288 Before-and-after proof of concept 289
+                                        ■
+
+
+
+                    Operational scripts 289
+           16.2   How do I introduce F# to my team? 289
+           16.3   The F# community 290
+                    Social media 290            ■
+                                                        Conferences and user groups                 290
+                    Open source 290
+           16.4   Advanced F# language features                         291
+                    Units of Measure 291 Active Patterns 291 Type
+                                                          ■                                 ■
+
+
+
+                    Extensions 293 Implicit Conversions 293 Statically
+                                        ■                                               ■
+
+
+
+                    Resolved Type Parameters 293 Metaprogramming 294■
+
+
+
+
+                  index   297
+                                                                  foreword
+F# is what I call a “Yes, and . . .” language. In improvisational comedy, an improviser
+accepts what has been said (“yes”) and expands on the line of thinking (“and . . .”).
+The F# language design and its ecosystem, toolset, and community adopt a similar
+philosophy to building software. F# is comfortable for developers from almost any
+programming background (“yes”), and it adds functional programming idioms that
+open up an entirely different programming ecosystem (“and . . .”).
+    F# in Action exemplifies the “Yes, and . . ” concept thoroughly. From the very begin-
+ning, the tone is clear: F# is a good fit for many different kinds of applications. You’ll
+find no ivory towers here, demanding that you rethink everything you know about
+software, rewrite all your code, and permanently try to jam the purest of functional
+programming into every bit of your software development life. Instead, the idea that
+F# is a functional programming language that can bring with it a different way of writ-
+ing software is rightfully presented as secondary to the productivity gained from writ-
+ing succinct code in conjunction with a rich ecosystem of libraries and tools.
+    In this book, you’ll find one, if not the most practical, approach to learning the F#
+language. You’ll be rooted in what the F# language community often refers to as “the
+F# way,” a set of principles and language idioms that produce succinct, robust perfor-
+mance, and uniform code. This last point is worth emphasizing: in modern software
+development, uniformity matters. When developers search for ways to solve a problem
+in F#, they are often greeted by similar-looking code (that uses similar features) for
+similar problems. This principle is foundational to F# in Action throughout all of its
+examples, whether it’s the simple data transformations you learn at first or full-stack
+web application development toward the end.
+
+
+                                       xiii
+xiv                                      FOREWORD
+
+
+          Personally, I am delighted at how often real-world tools and libraries are featured
+      throughout F# in Action. For example, plotting data using Plotly.NET not only teaches
+      you how to use F# for data analysis work but also how to use a powerful scientific plot-
+      ting framework through the lens of the language. You’ll get exposed to interoperabil-
+      ity between languages, how package management with F# and .NET works, how to use
+      tools like F# Interactive and the multitude of IDEs for F#, testing frameworks, and
+      more. This is the exemplification of what makes F# unique: it’s not just a language to
+      learn for the sake of learning a language; it’s an enjoyable tool to be used together
+      with a multitude of other tools.
+          When I first met F# in Action author Isaac Abraham years ago, he was concerned
+      about practical and sometimes even boring uses of F#. This remains true today, and
+      that mentality comes out in this book. With F# in Action, you’ll find a ruthlessly practi-
+      cal approach to learning not only F# but also how to write software for all kinds of dif-
+      ferent domains effectively. So, what are you waiting for? It’s time to get programming
+      with F#!
+                                                                                —PHILLIP CARTER
+                             Phillip Carter was formerly the product manager for F# Language and
+                           Tools at Microsoft and currently explores how to improve software systems
+                                                                              using modern AI tools.
+
+
+      When people talk about the evolution of programming languages, they will typically
+      talk about what language feature was added to which language version. Yet, what
+      enables a language and its community to evolve in a new way and become successful is
+      often not a language feature. Do not get me wrong. I appreciate all the recent lan-
+      guage improvements that make F# more pleasant to use, like string interpolation. But
+      what makes it worth writing a brand-new book about F# is something else.
+          First, there is the move from the .NET Framework to the new cross-platform and
+      open source .NET (formerly .NET Core). F# was always ahead of the curve. It ran on
+      the cross-platform Mono platform in the era of proprietary .NET Framework, it was
+      open-sourced as early as 2010, and it supported third-party code editors ranging from
+      Emacs to Atom since its early days. Getting all the F# libraries and tooling to work on
+      the new .NET was a painful task, but we are there now. Not only did this get F# first-
+      class cross-platform support, but the entire .NET ecosystem has also adopted ways of
+      working that we in the F# world always, perhaps secretly, knew were the right ones.
+          Second, the F# community has become a fully recognized player in the F# ecosys-
+      tem. Many core libraries and tools for F# have been developed and used by its enthusi-
+      astic open source community since its early days. It took a surprisingly long time for
+      everyone to accept that this is the right way of working. Perhaps we needed the almost
+      10-year history of projects like FAKE, Ionide, F# Data, and Fable to show that the F#
+      community as a whole can take responsibility for core F# components, even if individ-
+      ual maintainers sometimes move on. Today, community-developed libraries and tools
+                                   FOREWORD                                               xv
+
+
+are the basis of much of F# development. Their longevity is ensured by the commu-
+nity, the nonprofit F# Software Foundation, and commercial F# companies investing
+time into the development of those core F# components.
+    Third, the way of talking and thinking about F# has also changed in the last couple
+of years. The cross-platform nature of .NET made F# attractive to a broader audience,
+and functional programming is no longer an obscure academic idea but something
+that most programming languages support in one way or another. Sure, it is still worth
+talking about how to interoperate with .NET, how to best leverage functional ideas in
+F#, and how the language supports techniques like functional domain modeling using
+types. However, we can now focus on how to get things done rather than on academic
+or ideological debates. F# is no longer something strange but rather a broadly
+accepted language that anyone can become curious about, learn, and use in practice.
+    It is remarkable that the move to cross-platform open source .NET, acceptance of
+the community as a key ecosystem player, and the new thinking about F# and func-
+tional programming all culminated at the same time. But I would even dare say that
+F# has reached a new harmonious, stable point where it can thrive and develop. And
+this new stable point in the history of F# also needs a new F# book.
+    The book you are looking at is a perfect fit for the new harmonious era of F#. The
+book is pragmatic and does not try to optimize for a reader with a special kind of back-
+ground. If you are a programmer interested in F#, it gives you an excellent hands-on
+guide for learning the language and how to best use it to solve a wide range of prob-
+lems. The book embraces the new .NET ecosystem, including the command line–ori-
+ented approach to many tasks. It also embraces a wide variety of community-led tools
+and libraries that make F# so powerful, ranging from the Ionide plugin for Visual Stu-
+dio Code and the Fantomas code formatter to the Fable F# to JavaScript compiler and
+the SAFE Stack for full stack F# web programming.
+    Writing a book for the new era of F# requires an author with an impossible combi-
+nation of traits. They need to be someone who has been using F# for a long enough
+time to have the right expertise and ability to explain the concepts in a clear, practical
+way. But they also need to see F# from a new, fresh perspective that is quite different
+from what many of us old-timers are used to! How can we get a book that is not biased
+by the particular interests of its author? Isaac clearly has the necessary expertise. Say-
+ing that he has been using F# for over a decade is not a marketing slogan. I know
+because he came to my F# course in London in 2012! But more importantly, he has
+also been helping F# to enter the new era by supporting the community, both as an
+individual contributor through his successful consulting company and as someone
+who has helped us find a new way of talking about the language and its ecosystem. In
+other words, Isaac and this book are the perfect guides to take you to the new harmo-
+nious era of F#!
+                                                                        —TOMAS PETRICEK
+                                          Assistant Professor at Charles University in Prague
+                                                                   preface
+When I wrote Get Programming With F# (GPWF) in the late 2010s, I wanted to create a
+practical, pragmatic, and easy-to-understand guide to using F# for real-world applica-
+tions. While the book achieved those goals and has received positive feedback, some
+parts of it quickly aged due to circumstances outside of my control—in particular, due
+to one factor: the release of .NET Core. When I started the book, .NET Core wasn’t
+even a real thing. It was called DNX at the time and didn’t have a clearly publicized
+vision of where it was going or even that it would in time replace the .NET Framework.
+But today, .NET Core (or nowadays just called “.NET”) is both the present and future
+of all .NET development; this presented certain challenges for GPWF:
+    The book focused on the .NET Framework.
+    The book focused on Windows development and tooling. F# is now a first-class
+     cross-platform language with associated tooling.
+    The book focused on C# developers since, at the time, this was where most F#
+     developers originated from. Nowadays, I see developers coming from back-
+     grounds such as JavaScript, Python, Scala, R, and PHP as well as those coming
+     to programming for the first time.
+Even worse, many of the libraries and frameworks that almost half of the book focused
+on were either rendered outdated or completely obsolete by the advent of .NET Core.
+   F# in Action is my answer to these challenges: a reimagined look at F# today, based
+not only on a more modern, cross-platform approach to F# but also updated with
+my recommendations on how best to learn and use F# based on working day in and
+
+
+
+                                     xvi
+                                   PREFACE                                         xvii
+
+
+day out with a team of F# developers and engagements in the community for several
+years now.
+   Writing F# in Action was a different kind of challenge to GPWF. I originally imag-
+ined it would be a relatively short effort to upgrade the content of GPWF to make it
+.NET Core ready. But as I dug into it, I realized that it would be basically a complete
+rewrite as it targeted a new audience with new exercises and aimed to avoid some of
+the pitfalls of GPWF, especially the use of specific libraries and technologies.
+                                        acknowledgments
+I am grateful to all who have helped during the writing of this book. Moving to a new
+country and home twice in the space of a year aren’t circumstances conducive to
+focusing on writing a book, but the support received and patience shown by the team
+at Manning helped me immensely.
+    In particular, I’d like to thank my development editor Dustin Archibald, technical
+proofreader Sudipta Mukherjee, and all members of the production team for their
+support with F# in Action. Many thanks also to Phillip Carter and Tomas Petricek, who
+authored the forewords to this book.
+    Special thanks go to technical editor, Michael Ciccotti, who is a senior software
+engineer at Divisions Maintenance Group. He has 15 years of experience building
+software, with experience in a wide variety of programming languages, and enjoys the
+clarity and simplicity of expression that F# enables.
+     Thank you to all the reviewers—Abraham Hosch, Andrew MacDonald, Andy
+Kirsch, Artur Tadrała, Bjorn Nordblom, Christian Leverenz, Dale S. Francis, Dan Sheikh,
+Dmitry Dorogoy, Florian Verdonck, James Liu, Jason Down, Jean-Paul Malherbe,
+Joel Kotarski, John Henry Galino, Jort Rodenburg, Karl van Heijster, Kent Spillner,
+Kevin Orr, Kristinn Stefánsson, Markus Wolff, Milan Mulji, Pasquale Zirpoli, Rani
+Sharim, Ryan Gregory, Satej Kumar Sahu, Stefan Turalski, Thomas Peklak, Tiklu
+Ganguly, and Vincent Delcoigne. Your suggestions helped make this a better book.
+
+
+
+
+                                     xviii
+                                                about this book
+The overall aims of this book are very similar to Get Programming with F#: to provide
+you with the knowledge to understand the fundamentals of F#, to gain the confidence
+to use it in practical settings, and, lastly, to gain a smattering of knowledge of the core
+principles of functional programming.
+
+Who should read this book
+This book is applicable to software developers who already have some experience in
+software application development. It is particularly applicable to software developers
+with an interest in learning more about functional programming within the context of
+a large, mature platform and ecosystem, as well as those who simply want to level up
+their game when it comes to writing higher-quality applications that are succinct,
+robust, and performant. Although the book focuses on .NET, readers do not need to
+have experience using the .NET platform.
+
+How this book is organized: A road map
+This book has 16 chapters, roughly divided into two sections. The first half details F#
+the language itself, looking at different language features and seeing how to solve dif-
+ferent programming and modeling challenges using them:
+    Chapter 1 is an overview of the what and why behind F#.
+    Chapter 2 looks at the .NET toolchain as well as working with scripts.
+    Chapter 3 examines the basic principles of core F# language syntax and type
+      inference.
+
+
+                                       xix
+xx                                   ABOUT THIS BOOK
+
+
+         Chapter 4 shows how F# makes it easy to write applications that take advantage
+            of essential functional programming techniques such as expressions and immu-
+            tability.
+           Chapter 5 illustrates how to make use of two core types in F#: tuples and
+            records.
+           Chapter 6 goes deep into looking at functions in F# and how to organize appli-
+            cations using modules and namespaces.
+           Chapter 7 describes the different collection types commonly used in F#.
+           Chapter 8 rounds off this section by covering the use of both pattern matching
+            and discriminated unions.
+     The second half of the book focuses on practical applications of F# within a variety of
+     different use cases:
+         Chapter 9 shows how to build practical domain models that utilize all the differ-
+            ent types covered in the first section of the book.
+           Chapter 10 looks at techniques around working with data, such as sourcing,
+            wrangling, validating, and visualizing.
+           Chapter 11 covers interoperability scenarios for F#, both on the .NET platform
+            (typically with C#) and on the JavaScript ecosystem.
+           Chapter 12 focuses on asynchronous programming and how to handle differ-
+            ent use cases around concurrency and parallelism within F#.
+           Chapter 13 looks at web programming in F#, both server side on .NET and
+            using transpilers that compile F# into JavaScript, and how we can write full-stack
+            applications entirely in F#.
+           Chapter 14 discusses different techniques for automated testing on F#.
+           Chapter 15 is a slightly deeper dive into functional programming techniques
+            and covers examples of how to write applications that emphasize the use of
+            pure functions wherever possible.
+           Chapter 16 is the final chapter of the book and looks at where your F# journey
+            might go next, with ideas on applications that you can write to further your F#
+            knowledge.
+     This book is intended to be read alongside a computer. I’m a firm believer in learning
+     by doing. In the same way that you almost certainly can’t simply read a book cover to
+     cover on how to, for example, drive a car and then pass your driving test the next day,
+     you won’t learn F# just by reading this book alone. So, although the first half is
+     designed to be read in a linear fashion, with the second half being slightly more pick
+     and mix, I would strongly suggest that you manually type in all the examples as you go
+     through them to maximize the chance that you will fully understand the concepts and
+     techniques that are shown.
+                              ABOUT THIS BOOK                                      xxi
+
+
+About the code
+This book contains many examples of source code both in numbered listings and in
+line with normal text. In both cases, source code is formatted in a fixed-width font
+like this to separate it from ordinary text. Sometimes code is also in bold to high-
+light code that has changed from previous steps in the chapter, such as when a new
+feature adds to an existing line of code.
+    In many cases, the original source code has been reformatted; we’ve added line
+breaks and reworked indentation to accommodate the available page space in the
+book. In rare cases, even this was not enough, and listings include line-continuation
+markers (➥). Additionally, comments in the source code have often been removed
+from the listings when the code is described in the text. Code annotations accompany
+many of the listings, highlighting important concepts.
+    You can get executable snippets of code from the liveBook (online) version of this
+book at https://livebook.manning.com/book/f-sharp-in-action. The complete code
+for the examples in the book is available for download from the Manning website at
+https://www.manning.com/books/f-sharp-in-action and from GitHub at https://github
+.com/isaacabraham/fsharp-in-action.
+
+liveBook discussion forum
+Purchase of F# in Action includes free access to liveBook, Manning’s online reading
+platform. Using liveBook’s exclusive discussion features, you can attach comments to
+the book globally or to specific sections or paragraphs. It’s a snap to make notes for
+yourself, ask and answer technical questions, and receive help from the author and
+other users. To access the forum, go to https://livebook.manning.com/book/f-sharp-
+in-action/discussion. You can also learn more about Manning's forums and the rules
+of conduct at https://livebook.manning.com/discussion.
+    Manning’s commitment to our readers is to provide a venue where a meaningful
+dialogue between individual readers and between readers and the author can take
+place. It is not a commitment to any specific amount of participation on the part of
+the author, whose contribution to the forum remains voluntary (and unpaid). We sug-
+gest you try asking the author some challenging questions lest his interest stray! The
+forum and the archives of previous discussions will be accessible from the publisher’s
+website as long as the book is in print.
+                     about the author
+ISAAC ABRAHAM is a .NET developer since .NET 1.0 and has an
+interest in cloud computing and distributed data problems. He
+is the founder of Compositional IT and is a Microsoft MVP.
+Isaac specializes in consultancy, training, and development,
+helping customers adopt high-quality, functional-first solutions
+on the .NET platform.
+
+
+
+
+              xxii
+              about the cover illustration
+The figure on the cover of F# in Action is “Insulaire de Wateeoo,” or “Wateeoo
+Islander,” taken from a collection by Jacques Grasset de Saint-Sauveur, published in
+1788. The illustration is finely drawn and colored by hand.
+    In those days, it was easy to identify where people lived and what their trade or sta-
+tion in life was just by their dress. Manning celebrates the inventiveness and initiative
+of the computer business with book covers based on the rich diversity of regional cul-
+ture centuries ago, brought back to life by pictures from collections such as this one.
+
+
+
+
+                                      xxiii
+                                                     Introducing F#
+
+
+
+      This chapter covers
+       Learning what F# is and isn’t
+       Why you should be interested in using F#
+       When is a good time to use F#
+       Understanding what this book will and won’t
+        teach you
+       Understanding the mental model behind F#
+
+
+
+
+          In this chapter, I’ll be taking you through the basics of F#, how it may differ from
+          other languages you’re familiar with, and why you should learn it. We’ll explore
+          some of its great features as well as its potential as a primary programming lan-
+          guage in your toolbox. Let’s get started!
+
+1.1       What is F#?
+          F# is a general-purpose programming language that’s designed to build systems that are
+          robust, succinct, and performant across Windows, Mac, and Linux. It has a light-
+          weight syntax, yet a powerful type system and compiler. This makes it a compelling
+          choice for writing applications, as it enables developers to rapidly model real-world
+          systems in a way that does what they intend.
+
+
+
+                                                1
+2                                         CHAPTER 1    Introducing F#
+
+
+          F# is an opinionated language with a set of characteristics that it is optimized toward.
+      What do I mean by this? F# encourages us to write applications using a consistent set
+      of simple constructs such as functions, data, and types in a very low-ceremony fashion
+      compared to many other languages that come from a more classical object-oriented
+      background. Although some of those languages have added in some capabilities to
+      hide some of that complexity, in F#, this has been a core part of its design from day
+      one. As an example, here’s some basic F# code that defines a function:
+                               Defines a function with a       Performs a
+                                 single input argument         calculation and      Creates a
+                                                               assigns the result   record result
+      let addTenThenDouble theNumber =                         to a symbol          and returns it
+          let answer = (theNumber + 10) * 2                                         to the caller
+          { Answer = answer; Date = System.DateTime.UtcNow }
+
+      F# is fully type-safe but does away with a lot of ceremony that other languages often
+      put in place, such as type annotations and full-blown classes, leading to a way of writ-
+      ing code that allows you to quickly focus on directly solving the problem at hand.
+          Because F# runs on the modern, lightweight, cross-platform .NET runtime, it has a
+      large, mature ecosystem of free and commercial tools and libraries, ranging from web
+      servers to database access, cloud, data and analytical libraries, actor frameworks, and
+      more. This means that you won’t have to create entire platforms but can reuse exist-
+      ing battle-tested components already out there, leaving you to focus on delivering
+      business value. You can seamlessly interoperate with C# code, creating hybrid F#/C#
+      solutions if required, so if you’re already using .NET, much of what you already know
+      about the platform will continue to apply.
+
+1.2   Why F#?
+      There are many reasons why F# might be a great fit for you. Here are a few to whet
+      your appetite!
+          F# is rewarding and fun. People who use F# find it a rewarding and enjoyable lan-
+      guage to quickly write applications in that simply lets you get stuff done, freeing you to
+      focus on the business of writing your application while the language does its best to
+      help you along the way and guide you to success. I’ve spoken with many people who
+      said they were in a programming rut but gained a newfound enthusiasm for software
+      development when they switched to F# because it freed them to focus on delivering
+      business value to their customers. This also works for the hiring manager—happier
+      developers generally lead to less turnover, lower costs, and better results.
+          F# is highly productive. At its core, F# is a relatively simple language with a concise
+      and easy-to-read syntax and a relatively consistent way of problem-solving. Yet, at the
+      same time, it’s a safe language to use, with a powerful compiler and type system (more
+      so than many popular programming languages) that can trap many classes of potential
+      bugs as you type. It also runs on a performant, mature, popular platform (.NET) with a
+      wide variety of time-saving packages. In my experience, people writing applications in
+                                     1.3   When F#?                                          3
+
+
+      F# do so more quickly than in other languages because it hits a sweet spot between
+      simplicity, safety, and power.
+          F# is also very flexible. You can use it in numerous scenarios, from simple scripts
+      for data exploration and experimentation to full-blown cloud-enabled end-to-end
+      microservices and web applications. There’s a very good chance that whatever you’re
+      doing today, you can also do in F#. There’s also the possibility that F# will open the
+      door to areas that you may not have considered before. For example, if you’re coming
+      from a C# background, F# will show you how you can use .NET for more data-oriented
+      and analytical tasks that perhaps previously you might have thought could only be
+      done in SQL. For those of you coming from a Python background, you’ll see a lan-
+      guage whose syntax is not a million miles away from what you already know yet is stati-
+      cally typed and highly performant. And for those coming from a JavaScript background,
+      you’ll appreciate how some of the functional patterns that are becoming popular in
+      that language are first-class citizens here and that F# has a static type system and syn-
+      tax that gets out of your way.
+          Additionally, if you’re interested in learning some of the fundamentals of func-
+      tional programming (FP), F# is a great way to do that; it has its roots in languages such
+      as ML and OCaml. However, it’s what I would call a “light-touch” FP language: you’ll
+      appreciate how it guides you toward writing simple, error-free code without needing
+      to know any of the math and theory people often associate with FP. Importantly, it also
+      provides you with enough escape hatches such that if you need to break out into pro-
+      cedural or object-oriented programming, you can do it without much effort.
+
+1.3   When F#?
+      Since F# is a general-purpose programming language, the simplest answer to when
+      you should use F# might be “Whatever you’re doing today in whatever programming
+      language you’re working in, you can probably do it in F#.” Nonetheless, let’s look at a
+      few different use cases of F# to give you an idea of what’s possible:
+          Console applications—You can write basic console applications such as command-
+           line tools in F#. It’ll happily read and write from the terminal and has libraries
+           to make animated, colorful console applications with widgets such as tables,
+           charts, and progress bars.
+          Background workers—F# allows you to write background services or daemons,
+           which don’t necessarily have any console inputs. Perhaps you need a process
+           that runs on a virtual machine that reads data from a database and creates a
+           report once a day or an application that sits in the background and monitors a
+           folder for new files as they’re created to parse and process them. No problem!
+          Desktop applications—F# has support for desktop applications with a number of
+           technologies, whether they’re simpler database-driven applications or richer
+           applications with sophisticated user interfaces using either Windows-specific or
+           cross-platform libraries and frameworks.
+4                                        CHAPTER 1   Introducing F#
+
+
+          Cloud services—You can write and deploy applications designed for just about
+             any cloud provider; whether it’s a more infrastructure-focused service or one of
+             the platform services that the bigger players such as Azure, Amazon, or Google
+             offer, there’s support for F#.
+            Mobile applications—Through the Xamarin and upcoming MAUI projects, Mic-
+             rosoft offers a full suite of frameworks and tools for developing mobile applica-
+             tions for both Android and iOS without knowing Java, Objective-C, or Swift.
+             Instead, applications can be written once in F# and simultaneously target both
+             platforms.
+            Web services—F# can write web services that are secure, reliable, highly scalable,
+             and extremely performant through the ASP .NET Core framework. Not only
+             are web applications a natural fit for F#’s stateless programming model, but F#
+             also has several libraries that give a truly first-class F# experience on top of ASP
+             .NET Core.
+            Web applications—Want to write applications in the browser? F# has you covered
+             here, too! Through the Fable framework, you can compile your F# directly into
+             JavaScript and run applications in the browser directly. This is a real boon if
+             your team is not filled with JavaScript experts and prefers the benefits that static
+             typing brings, where you can get the best of both worlds: use popular JavaScript
+             libraries and frameworks such as React while writing code safely in F#.
+            Data exploration and analysis—F# has a solid data-analysis-and-scripts story, from
+             consuming data from multiple sources to visualizing data through charts and
+             tables.
+            Data modeling—One of F#’s often overlooked features is its effectiveness in mod-
+             eling domains. Not only does it have a type system that allows you to easily
+             model the real world in a minimum amount of code, but it’s also readable
+             code—the sort that you can legitimately sit down with a nontechnical user and
+             explore a domain, evolving a model of the real world step by step, side by side.
+
+1.4   How will this book teach me F#?
+      This book is designed to teach software developers who already understand the funda-
+      mentals of software development how to develop F# applications on the .NET plat-
+      form. It won’t teach you everything about the F# language—it’s not a reference
+      guide—but it will teach you the core of the language in a way that will give you the
+      confidence to start creating applications and learning how to find out more about
+      the language and ecosystem on your own.
+          As part of the journey of describing F#, this book will also teach you the basics of
+      FP. You won’t need to know anything about FP before buying this book, and you won’t
+      leave it as an expert in F#. However, you will understand the core concepts and be
+      able to apply them in the real world to build applications from simple console applica-
+      tions to fully featured web applications.
+                                  1.5 How does F# work?                                      5
+
+
+1.5     How does F# work?
+        This section tries to give you a feel for how development in F# looks and feels. It’s
+        based not only on my own experiences of the language but also on those of many oth-
+        ers who have used it extensively. Figure 1.1 shows you how I see some of the common
+        features of what your development experience will look like.
+
+1.5.1   Collaborative exploration
+        One of the features of the F# development experience that might not be so familiar to
+        you is that it contains a highly interactive “scripting” mode, where you can experiment
+        with different ways of modeling code, try different ways of implementing solutions,
+        and see how they work. Once you’re happy with the result, you can quickly migrate it
+        into a full-blown application—whether a console application or a data-driven web API
+        running on ASP .NET Core (the standard .NET web server).
+             Another aspect is the collaborative element that F# brings. F#’s syntax is highly
+        readable for nontechnical people, and combined with its type system, it is especially
+        effective for domain modeling. This means that you can (and I have done, many
+        times) sit alongside a customer and, starting from ground zero, try to build up a
+        model of a real-world system and test it out with some arbitrary code. There’s no need
+        for a console test runner or full-blown database— just some code and in-memory data.
+        It’s a much more iterative process, where ideas can be tested and thrown away at low
+        cost, and both you and the domain experts can start to build a common understand-
+        ing of the system you’re trying to model.
+
+1.5.2   Type-driven development
+        F# is a type-safe statically typed programming language, which means that you formally
+        declare the types of your system, and the compiler will enforce rules that you define
+        about those types. F# makes it very, very easy—and therefore cheap—to create and use
+        types, meaning that you generally can afford to be a little more specific in how you
+        model your systems. Doing this means that your code can be used to encode more
+        business rules and is clearer and easier to read than it might otherwise be. Doing this
+        not only means that we can more easily support business rules about our types but also
+        protects against accidentally mixing and matching incorrect types of data. Finally, it
+        also helps from a readability point of view: for example, while both City and Country
+        in an Address type might be strings, in F#, it wouldn’t be unusual to have “wrapper”
+        types for both, each with their own invariant rules and constraints.
+            So, although F# is totally happy with you not doing any of this stronger domain
+        modeling, it also doesn’t impose much of a cost on doing so and thus encourages us
+        to “do the right thing” up front.
+6                                                 CHAPTER 1     Introducing F#
+
+
+
+                                                                                          Domain
+                         Start here       Developer
+                                                                                          expert
+
+
+
+                                                              Collaboration
+
+
+                                                                                          Iterative
+                                                                Domain                    process
+                                                                                                               Script
+                         General                               exploration
+                         coding loop
+                                                               Outcomes
+
+                                                                                Core application domain
+
+
+
+                                              Business                                Business
+                                                rules                                   logic
+
+
+
+                                          Encoded                                                Conditional
+                                                                                                 logic and
+                                                                                                 mapping
+                                                                 Deﬁne        Contracts
+                   SQL                                           types
+
+                                          Validation
+
+
+
+                                          Read and               Inputs                Create
+       etc.       JSON                    write data                                 functions
+
+
+                                                                                      Outputs
+                                                          Finished modelling
+                   In-
+                 memory
+                                                                                                 Fix errors
+
+                                                                Compile-
+                                                                  time
+                                                                 checks
+
+
+
+                                                         Everything compiles!
+                                                                                     Testing/running your app
+                                                                                     Minimal/no debugging
+
+
+                   Web
+                                                                                                               Android
+                 browser
+                                 Compile to
+                                 javascript                                                      xamarin
+                                                  Web           Console            Mobile
+
+
+                   Web
+                                                                                                                iOS
+                  server
+                                                                  etc
+
+
+
+
+    Figure 1.1   The mental model of the development process in F#
+                                   1.5 How does F# work?                                       7
+
+
+1.5.3   Trusting the compiler
+        Following from this, one of the things that F# encourages us to do is to trust the com-
+        piler. In many statically typed programming languages, software developers see the
+        compiler as their enemy—something that must be somehow overcome to run your
+        program so that you can test whether it works. In F#, this relationship changes to one
+        where the compiler becomes your partner, giving you guidance and help to write code
+        that does the correct thing.
+            Eventually, the developer trusts the compiler to prove business rules without feel-
+        ing the need to run the application at all. While F#’s type system isn’t all-powerful, it
+        has enough smart features so that you can often code for several hours at a time, mod-
+        eling your systems, writing functions, mapping types from one shape to another, and
+        following the trail of breadcrumbs that the compiler gives you to follow to get your
+        code working correctly without ever once running your application. Generally, once
+        your code compiles, the first time you run it after the coding session, you’ll find it
+        works. So, you and your team will typically spend, as a proportion of your entire devel-
+        opment flow, more time actually coding and less time “trying things out” in the app
+        end to end.
+            I know that this sounds unlikely, unbelievable even, but it’s true. This is based not
+        only on my own experiences but also on working with and speaking to lots of different
+        F# teams and solo developers. They all say the same thing: F# makes them more confi-
+        dent developers because it helps them do the right thing.
+
+1.5.4   An opinionated language
+        F# is an opinionated language, and it optimizes for a specific way of writing applica-
+        tions safely that leads to fewer bugs and quicker time to market. The language makes
+        it easy to do the right thing the first time and, conversely, makes you pay a cost for
+        doing the wrong thing.
+            For example, imagine you’re writing a system that needs to export a report in
+        either Excel, PDF, or web formats. In F#, the compiler will give you a warning or error
+        if you forget to handle any of those cases; if you add a fourth report module in the
+        future, the compiler will again instantly show you every place you’ll need to change
+        your code to handle the new report.
+            This kind of approach is shown throughout the language, meaning that you’ll
+        have much more confidence when your code compiles that it actually works as you
+        expect it to.
+
+1.5.5   Data and functions
+        Although F# is different from the majority of popular mainstream languages out
+        there, it’s not hard to learn. It eliminates many concepts that you would need to know
+        in the object-oriented world, such as inheritance and polymorphism. It replaces those
+        with a simple idea: you have data that represents the state of your application and
+        functions that act on that data. Each function knows how to transform some data of
+8                                          CHAPTER 1   Introducing F#
+
+
+        one type into another type, and you compose those transformations into pipelines. You
+        repeat this pattern throughout your application until the very end of the request, at
+        which point you’ll, for example, write out a file or return some JSON data to the caller
+        of your web service.
+            For example, you might have a validation function that can handle a customer pur-
+        chase request, another function that can convert that request into an invoice, and
+        another one that can email the invoice to the customer. In fact, this simplicity makes it
+        a great choice for non-software developers, including (but not only) data analysts.
+
+1.5.6   Separation of business logic and external systems
+        Another thing you’ll notice with F# is that because of the features of the language, it
+        encourages (but doesn’t force you) to maintain a separation between your domain
+        logic and external dependencies such as databases or web services.
+            Doing this has many benefits. To start, your code will generally be more easily test-
+        able. If you want to create some unit tests for a specific portion of code, you’ll find
+        that it’s more likely to already support testing or, if not, be easier to refactor out to do
+        so. This also feeds into the exploratory scripting phase that I mentioned at the start of
+        this section: using scripts is something that you might well carry on into the main
+        development cycle of your application as a way to quickly call parts of the codebase in
+        an ad hoc fashion. This is especially useful for parts of the system that are more diffi-
+        cult to reach within your main application. People commonly use console test rigs or
+        even unit testing libraries for this, but an interactive script is normally a much more
+        effective and efficient tool.
+
+1.5.7   Varied targets
+        F# has a flexible and varied set of target devices and platforms that it can compile into.
+        .NET itself supports Mac, Linux, and Windows platforms, as well as all the major cloud
+        vendors, and can develop desktop app software or backend services. Alternatively, you
+        can write web applications with F# that either focus on backend data-oriented web ser-
+        vices using ASP .NET Core, or you can target the browser using the Fable project,
+        which compiles F# directly into JavaScript, or Xamarin/MAUI, which compiles into
+        iOS or Android.
+            Regarding data access, a plethora of libraries are available to you, including those
+        built into .NET, C# packages that you can seamlessly use in F#, or bespoke F# wrap-
+        pers, designed to give the highest fidelity F# experience. So you’ll have ready-made
+        access to SQL and JSON libraries, cloud platforms such as Microsoft Azure or Amazon
+        Web Services (AWS), and much more.
+            In some ways, F# gets the best of both worlds: you have a feature set that many
+        other languages (including C#) have been playing catch-up to for a few years now, but
+        at the same time, you’ll have access to a popular, mature, high-performance, and reli-
+        able platform and ecosystem in .NET.
+                                Summary                                             9
+
+
+Summary
+   F# is a robust, succinct, and performant general-purpose programming language.
+   F# runs on top of .NET, a runtime that can target multiple operating systems
+    and devices.
+   F# can be used for a variety of application types, from console to web to cloud
+    applications.
+   F# has a lightweight and interactive scripting mode that is ideal for exploration.
+   F#’s syntax is simple enough that nontechnical people can read it, making it a
+    useful tool for collaboration.
+   F# is highly productive, rewarding, and fun to use.
+   F# makes it easy for you to do the right thing and, conversely, gives you guard-
+    rails to stop writing code that is likely to fail.
+   F# has a basic model of data and functions, which is simple to learn yet made
+    powerful through composition.
+                                              Hands on with F#
+
+
+
+      This chapter covers
+       Writing code the F# way
+       F# and .NET
+       Creating your first F# program
+       Getting started with Visual Studio (VS) Code
+       Configuring VS Code
+       Working with the REPL and scripts
+
+
+
+
+          F# may be different than other languages you’ve used, but it’s powerful and useful.
+          In this chapter, we’ll get started coding and dive into what makes F# great.
+
+2.1       Writing code the F# way
+          Let’s start by considering some of the principles behind F# with a quick compare-
+          and-contrast with typical so-called curly-brace languages such as Java and C#. It’s
+          worth doing before we start diving into the code so that you’re mentally prepared
+          for some of the differences you might observe when doing F#. In some ways, much
+          of what you read in this section is similar to what I said in chapter 1, except this is a
+          more code-focused examination.
+
+
+
+
+                                                10
+                                 2.1   Writing code the F# way                                      11
+
+
+
+          How much of a functional programming language is F#?
+          We’ll cover this in more detail later, but in a nutshell, F# encourages what I consider
+          the two most important parts of functional programming (FP): expressions and immu-
+          tability. It also has many other features that support flexible functions (such as com-
+          position and currying), and numerous recently added features have made their way
+          into many other languages, such as lambdas and pattern matching. However, it doesn’t
+          support or enforce more hardcore FP features such as pure functions, type classes,
+          or higher kinded types.
+
+
+2.1.1   What, not how
+        Imperative code can be thought of as the low-level “how”—how you want to imple-
+        ment something—typically a set of lower-level instructions. Conversely, declarative
+        code concentrates more on expressing the “what”—what you want to achieve and leav-
+        ing the low-level details to another party—in this case, a compiler. Here’s an example
+        of an imperative way of filtering out odd numbers from a list using both imperative
+        code (I’m using C# syntax here) and the equivalent declarative variant (written in F#):
+
+        IEnumerable<int> GetEvenNumbers(IEnumerable<int> numbers)
+        {
+            var output = new List<int>();
+            foreach (var number in numbers) {
+                if (number % 2 == 0)                                            Imperative
+                    output.Add(number);
+                                                                                code
+            }
+            return output;
+        }
+
+        let getEvenNumbers =                                      Declarative
+            Seq.filter (fun number -> number % 2 = 0)             code
+
+        Both samples do the same thing. However, while the declarative version is focused on
+        stating what we want and leaving the compiler to work out the nitty gritty, the impera-
+        tive version takes ownership of how we want to filter the numbers—by creating an
+        intermediary list, iterating through each item one by one, etc.
+            Of course, most languages have libraries to support a declarative model, such as
+        LINQ in C#, Streams in Java, and so on. In F#, this is the de facto way of working and
+        is much more pervasive than you might be used to. If you’re used to the imperative
+        model of developing, this can feel a little like giving up control. However, once you’re
+        used to it, it’s very difficult to go back!
+
+2.1.2   Composability
+        F# also emphasizes composition rather than inheritance to achieve reuse, with sup-
+        port for this baked into the language. Functions are the main component of reuse
+        rather than classes, so expect to write small functions that plug together to create
+12                                       CHAPTER 2   Hands on with F#
+
+
+        powerful abstractions. Individual functions are nearly always easier to understand
+        and reason about than entire sets of methods coupled together through state in a
+        class. As such, making changes to existing code is much easier to do with a greater
+        degree of confidence.
+            Here’s a simple example of how we might build behaviors into more powerful ones
+        in C# and F#, trying to get all even numbers from a list and then square each. Again,
+        in C#, I’ve deliberately kept things at the method level, but you should also consider
+        the effort required when trying to compose more complex sorts of behaviors across
+        classes and objects:
+
+        IEnumerable<int> SquareNumbers(IEnumerable<int> numbers) {
+            // implementation of square elided...
+        }
+
+        IEnumerable<int> GetEvenNumbersThenSquare(IEnumerable<int> numbers) {
+            return SquareNumbers(GetEvenNumbers(numbers))
+        }                                                          Composes two
+                                                                              methods together
+        let squareNumbers = Seq.map (fun x -> x * x)
+        let getEvenNumbersThenSquare = getEvenNumbers >> squareNumbers
+
+                                                         Composes two functions together in F#
+
+
+
+          Where are the types?
+          F# is a statically typed language, just like languages such as Java and C#. But it has
+          an extremely powerful type inference engine, which means it has the succinctness
+          close to dynamic languages such as Python, yet with the backing of a strong type sys-
+          tem and compiler, so you get the best of both worlds. More on this later.
+
+
+        I’m not going to explain what the >> symbol does yet. But if you look at the F# version
+        of code, you can visually observe that we’re somehow plugging the getEvenNumbers
+        and squareNumbers functions together. This mode of design is, again, very common—
+        building small functions and bits of code that do a single thing well and then compos-
+        ing them together into larger, more complex parts later.
+
+2.1.3   Data and behavior
+        Another key pattern you’ll commonly see in F# is a clear separation of data and behav-
+        ior. If you’re coming from a language that uses object orientation (OO) as the key
+        mechanism for organizing code, you’ll find this a little different. Instead of having
+        classes that have both state and behaviors fused together, F# encourages you to design
+        code with simple data types with modules of functions that act on those types.
+            For example, in the OO world, in a retail web application, you might have a Basket
+        class with methods such as AddItem, Clear, and Checkout on them plus the internal
+        encapsulated state (what the items in the basket are, etc.). When you call methods on
+                                 2.1   Writing code the F# way                                13
+
+
+        them, they would perform some action and modify that internal private state. In the
+        FP world, you’d have an immutable record that stores the current state of the basket
+        (e.g., what the items in it are) and a module with stateless functions such as AddItem,
+        Clear, and Checkout. Each function would do some action and then return an
+        updated version of the basket. This generally leads to much simpler code that’s easier
+        to write, understand, and test and is more flexible and simpler to maintain. Of course,
+        you’ll learn exactly why that is in this book.
+
+2.1.4   Working with a smarter compiler
+        F# as a language inevitably changes how you write code. I think of myself as a lazy
+        developer: I like having things done for me. F# helps a great deal in this regard, espe-
+        cially for boilerplate activities that in other languages need more care to ensure you’ve
+        done the right thing.
+             Let’s take a simple example in which you’re a developer working on a small
+        change to an existing application. Imagine you decide to add a new field to an exist-
+        ing class; you find the class and add the new field to it. Your code compiles, and you
+        carry on with your day. Unfortunately, while you can reference this new field else-
+        where, you forgot to account for all the code paths that create objects of this type and,
+        unfortunately, left a code path where this field is not initialized.
+            Later, you run the application and receive a null reference exception somewhere
+        further down the call stack. Or, perhaps you’re unlucky and don’t notice the bug
+        because it’s in a particularly obscure branch of code. Instead, a few months later, your
+        users hit that code path, crashing the application and forcing a costly new release.
+            You could, of course, write unit tests to force this issue to the surface sooner.
+        Unfortunately, developers often don’t write unit tests, particularly for seemingly
+        innocuous changes such as this. After all, who has time to write unit tests like this
+        when there’s real work to be done for our customers and deadlines to hit!
+            Wouldn’t it be nice if the language itself could support us here to prevent this kind
+        of situation from occurring? In the F# world, adding a new field will instantly stop
+        your code compiling until you explicitly set the value of the new field at initialization
+        time, everywhere. You can only deal with how that new field is being used after you’ve
+        fixed all the assignments and usages. Nulls aren’t allowed for F# types either, so you
+        can’t set it as such. Instead, F# has the notion of optional values, which force you to
+        account for the possibility of missing values.
+            The net result? You’ll spend slightly more time fixing compiler issues and evaluat-
+        ing possible branches of code but a whole lot less time testing and fixing runtime
+        issues. In this example, you don’t need to write any unit tests to guarantee consistency
+        of the type, nor is there a risk of getting a null reference exception at run time—and
+        you won’t need to debug it to prove that you won’t get one.
+            You may feel an instinctive negative reaction to what I’ve just told you. After all,
+        why would you want a compiler to get in the way of writing code and slow you down
+        from running your application? Don’t worry; this is a normal reaction and part of the
+14                                    CHAPTER 2   Hands on with F#
+
+
+     learning curve in trusting the compiler to help us write correct code in a much richer
+     way than we’re used to, which saves us a lot more time further down the road.
+        As an example, imagine you’re a developer meeting a customer for a first discovery
+     workshop. They’re looking for you to build an IT system that can manage their train
+     stock and inventory, and the first question you want answered is “What is a train?”
+     What information needs to be captured? What kind of carriages does a train have?
+     After talking for a while with your customer, you end up with the following model. It
+     captures things like the carriages that a train is made up of, including what class they
+     are, what features each carriage has, and the stops that the train will make.
+
+       Listing 2.1   A domain model of a train system
+
+     open System                                           A train carriage can
+                                                           have a number of           A carriage can
+                                                           different features.        be either first or
+     type Feature = Quiet | Wifi | Toilet
+     type CarriageClass = First | Second                                              second class.
+
+     Type CarriageKind =                     Carriages can be either for
+         | Passenger of CarriageClass
+                                             passengers or buffet carts.
+         | Buffet of {| ColdFood : bool; HotFood : bool |}
+
+     type CarriageNumber = CarriageNumber of int                         A carriage has a unique
+                                                                         number on the train.
+     type Carriage =
+                                                    A carriage is
+         {                                          composed of all
+             Number : CarriageNumber                of these things.
+             Kind : CarriageKind
+             Features : Feature Set
+             NumberOfSeats : int
+         }
+
+     type TrainId = TrainId of string                Each stop is a
+     type Station = Station of string                station and a
+     type Stop = Station * TimeOnly                  time of arrival.
+
+     type Train =
+                                                  A train has a unique ID, and a
+         {                                        list of carriages. It always has
+             Id : TrainId                         an origin and destination and
+             Carriages : Carriage list            a list of stops in between. It
+             Origin : Stop                        might also have a station
+             Stops : Stop list                    where the driver changes.
+             Destination : Stop
+             DriverChange : Station option
+         }
+
+     Obviously, as this may be your first exposure to F#, some of the symbols, keywords,
+     and concepts here may be unfamiliar to you. Nonetheless, hopefully, you can see
+     how F#’s syntax is lightweight and easy on the eye compared to some other program-
+     ming languages and how something like this could be read and understood by a
+     domain expert.
+

@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="Week01.CSharp.Comparison/Week01.CSharp.Comparison.csproj" />
+  <Project Path="Week01.FSharp.Tests/Week01.FSharp.Tests.fsproj" />
+  <Project Path="Week01.FSharp/Week01.FSharp.fsproj" />
+</Solution>
