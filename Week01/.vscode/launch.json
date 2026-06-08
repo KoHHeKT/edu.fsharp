@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Week01.FSharp",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build Week01.FSharp",
+            "program": "${workspaceFolder}/Week01.FSharp/bin/Debug/net10.0/Week01.FSharp.dll",
+            "cwd": "${workspaceFolder}/Week01.FSharp",
+            "console": "integratedTerminal",
+            "stopAtEntry": false
+        }
+    ]
+}
